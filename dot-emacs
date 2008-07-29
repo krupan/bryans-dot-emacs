@@ -1,0 +1,612 @@
+; -*- emacs-lisp -*-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; This is Bryan Murdock's .emacs file.  It began as a simple copy
+;; from a fellow BYU students .emacs file, and has morphed greatly
+;; since.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; settings and default modes
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Are we running XEmacs or Emacs? (though I never run xemacs, and
+;; never use this test really...
+(defvar running-xemacs (string-match "XEmacs\\|Lucid" emacs-version))
+
+;; Turn on font-lock mode for Emacs
+(cond ((not running-xemacs)
+       (global-font-lock-mode t)
+       ))
+
+;; Highlight matching parenthesis
+(show-paren-mode t)
+
+;; Visual feedback on selections
+(setq-default transient-mark-mode t)
+
+;; hitting delete will delete the highlighted region
+(pending-delete-mode 1)
+
+;; Enable wheelmouse support by default
+(cond (window-system
+       (mwheel-install)
+       ))
+
+;;;;;;;; Don't truncate.  Wrap, or fold lines of split windows ;;;
+(setq truncate-partial-width-windows nil)
+(setq truncate-lines nil)
+
+;;;; The MODE Line ;;;;
+(column-number-mode 1)
+
+;;;;; no silly tool bar at the top ;;;
+(tool-bar-mode -1)
+
+;;; taking the plunge and getting rid of the menu too
+(menu-bar-mode -1)
+
+;;;;; scroll bar on the right side ;;;;
+;;(set-scroll-bar-mode 'right)
+
+;;; even more hardcore, no scrollbars
+(scroll-bar-mode -1)
+
+;;;;; scroll one line at a time ;;;;
+(setq scroll-conservatively 5)
+
+;; title bar shows name of current buffer, and current clearcase view
+;; if I'm at work
+(setq clearcase-view (getenv "VIEW_NAME"))
+(if (string-match "vcd.hp.com" system-name)
+    (setq frame-title-format '("emacs : %*%+ %b : " clearcase-view))
+  ;; else:
+  (setq frame-title-format '("emacs : %*%+ %b")))
+
+;; don't show the startup message every time, I know I'm using emacs
+;; thanks
+(setq inhibit-startup-message t)
+
+;; don't blink the cursor
+(blink-cursor-mode -1)
+
+;;;; use y or n instead of yes or no
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; paste where the cursor is, not where I'm pointing.  Sometimes I
+;; love it, sometimes I hate it...
+(setq mouse-yank-at-point t)
+
+;; start server so emacsclient can be used.  Allows you to type
+;; emacsclient filename on the command line and the file is opened in
+;; the currently running emacs.  Actually I always do emacsclient -n
+;; filename (actually a script called iv, as opposed to vi)
+(condition-case nil
+    (server-start)
+  (error (message "WARNING: couldn't start emacs-server")))
+
+;; minibuffer completion preview.  Looks kinda like ido-mode
+(icomplete-mode 99)
+
+;;;;;;;;;;;;;;;;;; I need a bit bigger default font ;;;;;;;;;;;;;;;;;
+;;
+;; all about fonts in emacs:
+;; http://www.cs.huji.ac.il/support/emacs/font.html
+
+;; work linux machines:
+(if (string-match "vcd.hp.com" system-name)
+    (set-default-font "9x15"))
+
+(if (string-match "lnxvcbdm" system-name)
+    (set-default-font "Bitstream Vera Sans Mono-10"))
+
+(if (string-match "bryan-work-laptop" system-name)
+    (set-default-font "Bitstream Vera Sans Mono-8"))
+;    (set-default-font "Monospace-8"))
+
+;; on windows, Lucida console is beautiful
+(if (string-match "VCSBRMU3" system-name)
+    (set-default-font "-outline-Lucida Console-normal-r-normal-normal-15-90-120-120-c-90-iso10646-1"))
+
+(if (string-match "VCSBRMU1" system-name)
+;;    (set-default-font "-raster-Courier-normal-r-normal-normal-16-120-96-96-c-90-iso10646-1"))
+    (set-default-font "-outline-Lucida Console-normal-r-normal-normal-15-90-120-120-c-90-iso10646-1"))
+
+;; home machine:
+(if (string-match "localhost" system-name)
+    (set-default-font "Bitstream Vera Sans Mono-10"))
+
+;; Verdana looks very pretty, but it's not exactly a monospaced
+;; font...
+(if (string-match "brzo" system-name)
+    (set-default-font "Verdana"))
+
+;;;;;;;;;;;;;;;;; stop beeping so much!! ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (setq ring-bell-function
+;;       (lambda ()
+;; (unless (memq this-command
+;; 		      '(isearch-abort abort-recursive-edit 
+;; 				      exit-minibuffer keyboard-quit))
+;; 	  (ding))))
+
+;; the above helps a little, this totally turns it off and replaces it
+;; with a flash:
+;; (setq visible-bell 1)
+
+;; Or you can have it play a sound, instead of the normal annoying beep
+(setq ring-bell-function (lambda ()
+			   (call-process
+			    "play" nil 0 nil
+			    "/usr/share/sounds/gtk-events/clicked.wav")))
+
+;;;;;;; ediff buffers sid-by-side, like it should ;;;;;;;;;;
+(setq ediff-split-window-function 'split-window-horizontally)
+
+;; also, don't pop-up a seperate frame, just make a new window:
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
+;; allows you to undow changes to your window configureations (like
+;; after an ediff session) by doing c-x left-arror (or right-arrow for
+;; a redo).  Very handy
+(winner-mode t)
+
+;; some people get upset if you use tabs instead of spaces, but I've
+;; never seen anyone get upset for doing things the other way around,
+;; so I decided to just use this (in short, uses spaces to indent
+;; stuff, not tabs)
+(setq-default indent-tabs-mode nil)
+
+;; start up with a horizontal split
+;;(split-window-horizontally)
+
+;;;;;;;;;;;;;;;;; Use cperl-mode instead of perl-mode ;;;;;;;;;;;;;;
+(add-to-list 'auto-mode-alist '("\\.\\([pP][Llm]\\|al\\)\\'" . cperl-mode))
+(add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
+(add-to-list 'interpreter-mode-alist '("perl5" . cperl-mode))
+(add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
+
+;; don't underline trailing whitespace (such an odd feature)
+;; hmmmm...this doesn't work
+(setq cperl-invalid-face nil)
+
+(setq compile-command "buildinit")
+
+;; set the compilation buffer to always scroll to follow output as it
+;; comes in.
+(setq compilation-scroll-output 1)
+
+;;;;;;;;;;;;;; store backup files in ~/.backups-emacs/ ;;;;;;;;;;
+(setq
+ backup-by-copying t                    ; don't clobber symlinks
+ backup-directory-alist
+ '(("." . "~/.backups-emacs"))          ; don't litter my fs tree
+ delete-old-versions t
+ kept-new-versionhs 6
+ kept-old-versions 2
+ version-control t)                     ; use versioned backups
+
+;; This causes files that I'm editing to be saved automatically by the
+;; emacs auto-save functionality.  I'm hoping to break myself of the
+;; c-x c-s twitch.
+(add-hook 'auto-save-hook 'save-buffer-if-visiting-file)
+
+;; save every 20 characters typed (this is the minimum)
+(setq auto-save-interval 20)
+
+;; save after 1 second of idle time (default is 30)
+(setq auto-save-timeout 1)
+
+;; I don't use WoMan much, but when I do, I don't want it to pop up a
+;; new window (known as a frame in emacs land):
+(setq woman-use-own-frame nil)
+
+;; default tags table, for work at least:
+(setq tags-file-name "/vobs/clark/TAGS")
+
+;; This is sweet!  right-click, get a list of functions in the source
+;; file you are editing
+;; (http://emacs.wordpress.com/2007/01/24/imenu-with-a-workaround/#comment-51)
+(global-set-key [mouse-3] `imenu)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Hooks and mode settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-hook 'c-mode-common-hook '(lambda ()
+                                 (setq c-basic-offset 4)
+                                 ;; everyone at work seems to format
+                                 ;; their code this way:
+                                 (c-set-style "stroustrup")
+                                 ;;With tab doing completion, M-tab is
+                                 ;;free for indent-region
+                                 (local-set-key [?\C-c tab] 'indent-region)
+                                 ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Some custom key bindings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; The EmacsManual says that the combination of C-c followed by a
+;; plain letter, and the function keys f5 through f9 are reserved for
+;; users. That means that you can expect that no other mode ever uses
+;; these -- it does not mean that you are limited to these,
+;; however. You can of course rebind any key you want.
+;;
+;; above from
+;; http://www.emacswiki.org/cgi-bin/wiki.pl/KeyBindingDiscussion
+;;
+(global-set-key "\C-cd" 'insert-date) ;; that's ctrl-c d
+
+(global-set-key [f3] '(lambda ()
+                           (interactive)
+                           (shrink-window-horizontally 10)))
+(global-set-key [f4] '(lambda ()
+                           (interactive)
+                           (enlarge-window-horizontally 10)))
+
+;; this is the best bit of emacs advice I've ever seen.  Invoke M-x
+;; without the Alt key!!!!  I got this from
+;; http://www.cabochon.com/~stevey/blog-rants/effective-emacs.html
+(global-set-key "\C-x\C-m" 'execute-extended-command)
+(global-set-key "\C-cg" 'goto-line)
+(global-set-key "\C-cv" 'view-file)
+(global-set-key "\C-ceb" 'ediff-buffers)
+(global-set-key "\C-cef" 'ediff)
+(global-set-key "\C-cc" 'comment-region)
+(global-set-key "\C-cu" 'uncomment-region)
+(global-set-key "\C-csb" 'ispell-buffer)
+(global-set-key "\C-csw" 'ispell-word)
+(global-set-key "\C-csc" 'ispell-comments-and-strings)
+(global-set-key "\C-csr" 'ispell-region)
+(global-set-key "\C-ca" 'align-regexp)
+(global-set-key "\C-co" 'occur)
+(global-set-key [tab] 'smart-tab)
+(global-set-key [C-tab] 'other-window)
+
+(global-set-key [f5] 'eval-buffer)
+(global-set-key [f6] 'cvs-examine)
+(global-set-key [f7] 'revert-buffer)
+(global-set-key [f8] 'start-or-end-macro)
+(global-set-key [f9] 'call-last-kbd-macro)
+(global-set-key [f10] 'color-theme-dark-blue2)
+(global-set-key [f11] 'next-error)
+(global-set-key [f12] 'compile)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Some handy functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun insert-date()
+  "Insert current date and time at point"
+  (interactive)
+  (insert (current-time-string)))
+
+;;;;;; quick move cursor to top or bottom of screen ;;;;;
+(defun point-to-top ()
+  "Put point on top line of window."
+  (interactive)
+  (move-to-window-line 0))
+
+(global-set-key [?\C-,] 'point-to-top)
+
+(defun point-to-bottom ()
+  "Put point at beginning of last visible line."
+  (interactive)
+  (move-to-window-line -1))
+
+(global-set-key [?\C-.] 'point-to-bottom)
+
+
+;; Use tab to complete and indent stuff.  Got this from
+;; http://www.emacswiki.org/cgi-bin/wiki/TabCompletion, made some mods
+;; so it wqould work with emacs 21
+(defun smart-tab ()
+      "This smart tab is minibuffer compliant: it acts as usual in
+    the minibuffer. Else, if mark is active, indents region. Else if
+    point is at the end of a symbol, expands it. Else indents the
+    current line."
+      (interactive)
+      ;; change this to (if (minibufferp) when I can finally ditch the
+      ;; old version of emacs at work.
+      (if (string-match "Minibuf" (buffer-name))
+          (unless (minibuffer-complete)
+            (dabbrev-expand nil))
+        (if mark-active
+            (indent-region (region-beginning)
+                           (region-end))
+          ;; add an underscore after the '\\' when I can finally ditch
+          ;; the old version of emacs at work.
+          (if (looking-at "\\>")
+              (dabbrev-expand nil)
+            (indent-for-tab-command)))))
+
+;; this is used by my auto-save hack:
+(defun save-buffer-if-visiting-file (&optional args)
+  "Save the current buffer only if it is visiting a file"
+  (interactive)
+  (if (buffer-file-name)
+      (save-buffer args)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; doesn't change the timestamp on blosxom entries when you edit
+;; them. Very nice.  I got this from:
+;; http://www.lathi.net/twiki-bin/view/Main/EmacsAndBlosxom
+;;
+;; I just noticed that this seems to be used for some non-blosxom .txt
+;; files, at least on my emacs-snapshot.  Weird.  I need to get off of
+;; blosxom, as if I'll ever have time to do that at work again.
+
+(defun save-buffer-same-timestamp (&optional args)
+  "Save the current buffer in visited file if modified.  Versions are
+controlled with ARGS as with `save-buffer'.  The difference between
+this command and save-timestamp is that this command saves the
+modification time of the file from disk and resets it after the file
+is saved."
+  (interactive)
+  (let* ((buffer (current-buffer))
+         (file-name (if (tramp-tramp-file-p (buffer-file-name))
+                        (tramp-file-name-path
+                         (tramp-dissect-file-name
+                          (tramp-completion-handle-expand-file-name (buffer-file-name))))
+                      (expand-file-name (buffer-file-name))))
+         (file-attributes (file-attributes (buffer-file-name)))
+         (time-string (if file-attributes
+                          (format-time-string "%Y%m%d%H%M.%S"
+                                              (nth 5 file-attributes))))
+         (shell-cmd (if (tramp-tramp-file-p (buffer-file-name)) 'tramp-handle-shell-command 'shell-command)))
+
+    (save-buffer args)
+    (if (and (stringp time-string)
+             (= 0 (funcall shell-cmd
+                           (format "touch -t %s %s"
+                                   time-string file-name)))
+             (set-buffer buffer)
+             (revert-buffer nil t))
+        (message "Wrote %s, set timestamp to %s" file-name time-string))))
+
+(defvar blosxom-file-regexp "blosxom.*txt"
+  "Regular expression matching files that are stories for a blosxom blog")
+
+(defun blosxom-find-file-hook ()
+  "A function to be bound as a `find-file-hooks' that will rebind
+\"C-x C-s\" to `save-buffer-same-timestamp'."
+  (if (string-match blosxom-file-regexp (buffer-file-name))
+      (local-set-key (kbd "C-x C-s") 'save-buffer-same-timestamp)))
+
+(add-hook 'find-file-hooks 'blosxom-find-file-hook)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Got these from Yegge:
+;; http://steve.yegge.googlepages.com/my-dot-emacs-file
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Never understood why Emacs doesn't have this function.
+;;
+(defun rename-file-and-buffer (new-name)
+ "Renames both current buffer and file it's visiting to NEW-NAME."
+ (interactive "sNew name: ")
+ (let ((name (buffer-name))
+	(filename (buffer-file-name)))
+ (if (not filename)
+	(message "Buffer '%s' is not visiting a file!" name)
+ (if (get-buffer new-name)
+	 (message "A buffer named '%s' already exists!" new-name)
+	(progn 	 (rename-file name new-name 1) 	 (rename-buffer new-name) 	 (set-visited-file-name new-name) 	 (set-buffer-modified-p nil)))))) ;;
+;; Never understood why Emacs doesn't have this function, either.
+;;
+(defun move-buffer-file (dir)
+ "Moves both current buffer and file it's visiting to DIR."
+ (interactive "DNew directory: ")
+ (let* ((name (buffer-name))
+	 (filename (buffer-file-name))
+	 (dir
+	 (if (string-match dir "\\(?:/\\|\\\\)$")
+	 (substring dir 0 -1) dir))
+	 (newname (concat dir "/" name)))
+
+ (if (not filename)
+	(message "Buffer '%s' is not visiting a file!" name)
+ (progn 	(copy-file filename newname 1) 	(delete-file filename) 	(set-visited-file-name newname) 	(set-buffer-modified-p nil) 	t)))) 
+
+(defun insert-file-name()
+  "Inserts the file name at the current point"
+  (interactive)
+  (insert (buffer-name)))
+
+;; this entry:
+;; http://www.emacsblog.org/2007/02/27/quick-tip-add-occur-to-isearch/,
+;; linked to this:
+;; http://blog.zenspider.com/archives/2007/02/new_category_emacs.html,
+;; which gave me this awesome thing.  Hit c-o while doing a c-s search
+;; and it does an occur on what your searching for.
+(define-key isearch-mode-map (kbd "C-o")
+  (lambda ()
+    (interactive)
+    (let ((case-fold-search isearch-case-fold-search))
+      (occur (if isearch-regexp isearch-string
+               (regexp-quote isearch-string))))))
+
+;; Got this from: http://www.emacswiki.org/cgi-bin/wiki/MacroKey
+(defun start-or-end-macro (arg)
+  "Starts or ends the defining of a keyboard macro, depending on
+whether you are defining one at the moment or not"
+  (interactive "P")
+  (if defining-kbd-macro
+      (if arg
+          (end-kbd-macro arg)
+          (end-kbd-macro))
+      (start-kbd-macro arg)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Hopefully everything above this works for the basic emacs
+;; distribution.  Every below this is for stuff I've downloaded.
+;;
+;; I've tried to use autoload where I can so if these aren't installed
+;; in ~/elisp on a given system emacs won't complain.
+;;
+;; I just learned that another way to keep emacs from complaining if
+;; something isn't found is to do a "soft require."  Explained here:
+;;
+;; http://www.emacswiki.org/cgi-bin/wiki/RequiredFeatureDefined
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;; set local load path for downloaded modes ;;;;;;
+(defun prepend-path ( my-path )
+  (setq load-path (cons (expand-file-name my-path) load-path)))
+(defun append-path ( my-path )
+  (setq load-path (append load-path (list (expand-file-name my-path)))))
+;; Look first in the directory ~/elisp for elisp files
+(prepend-path "~/elisp")
+
+;; get cscope integrated with emacs
+(add-to-list 'load-path "~/elisp/xcscope/")
+(condition-case nil
+    (require 'xcscope)
+  (error (message "WARNING: couldn't find cscope")))
+(setq cscope-initial-directory "/vobs/clark")
+(setq cscope-do-not-update-database t)
+(setq cscope-database-file "cscope_out")
+
+;;; setting up the local install of css mode ;;;
+;; (autoload 'css-mode "css-mode" nil t)
+;; (setq auto-mode-alist       
+;;       (cons '("\\.css\\'" . css-mode) auto-mode-alist))
+
+;; color theme, a handy collection of, well, color themes for emacs
+(condition-case nil
+    (load "color-theme")
+  (error (message "WARNING: couldn't find color-theme")))
+
+;;; cool buffer switching and file opening ;;;
+(condition-case nil
+    (load "ido")
+  (error (message "WARNING: couldn't find ido-mode")))
+(if (featurep 'ido)
+    (ido-mode))
+
+;;;; nxml-mode, it rocks:
+(condition-case nil
+    (load "nxml-mode/rng-auto.el")
+  ;; if that doesn't work, load my downloaded version:
+  (error (condition-case nil
+      (load "nxml-mode/nxml-mode-20041004/rng-auto.el")
+    (error (message "WARNING: couldn't find nxml-mode")))))
+
+(setq nxml-slash-auto-complete-flag t)
+(add-to-list 'auto-mode-alist
+              (cons (concat "\\." (regexp-opt '("xml" "xsd" "sch" "rng" "xslt" "svg" "rss" "xmlr" "xsl" "html" "htm" "inc") t) "\\'")
+                    'nxml-mode))
+(fset 'html-mode 'nxml-mode)
+(add-hook 'hack-local-variables-hook
+          (lambda ()
+            (save-excursion
+              (when (search-forward-regexp "^<\\?xml" 6 0)
+                (nxml-mode)
+                ))))
+
+
+;; clearcase is a revision control system
+(require 'clearcase nil t)
+
+(setq clearcase-suppress-checkout-comments t)
+(if (featurep 'clearcase)
+    (define-key clearcase-prefix-map "=" 'clearcase-ediff-pred-current-buffer)
+)
+
+(if (featurep 'clearcase)
+    (define-key clearcase-prefix-map "r" 'clearcase-ediff-branch-base-current-buffer)
+)
+
+;; subversion interface:
+(require 'psvn nil t)
+
+;; guesses the c-basic-offset to use for a file
+(require 'guess-offset nil t)
+
+;; These two work together to give you nice word-wrapping for files
+;; with long lines.  They don't save the line breaks they insert, it's
+;; a view only thing, kind of like if you turn on word-wrap in
+;; notepad.
+
+(condition-case nil
+    (load "longlines")
+  (error (message "WARNING: couldn't find longlines")))
+
+;; Apparently wrap-mode has been folded into longlines.  I don't know
+;; how it will behave with that blosxom function at this point (see
+;; note below)
+;;
+;; (condition-case nil
+;;     (load "wrap")
+;;   (error (message "WARNING: couldn't find wrap")))
+;;
+;; except that in conjuction with the blosxom
+;; save-buffer-same-timestamp function things get really messed up, so
+;; don't automatically make all text-mode buffers use wrap-mode.
+;;(add-to-list 'auto-mode-alist '("\\.\\(txt\\|text\\)\\'" . wrap-mode))
+
+
+;; for dealing with fun (annoying?) camelCaseWords
+;; http://www.hotdispatch.com/download/ip/14312566/739119894/camelCase.tgz
+(condition-case nil
+    (load "camelCase-mode.elc")
+  (error (message "WARNING: couldn't find camelCase")))
+
+(add-hook 'java-mode-hook '(lambda () (camelCase-mode 1)))
+(add-hook 'c-mode-common-hook '(lambda () (camelCase-mode 1)))
+
+;; these sound cool for use with camelCase-mode, don't know how yet:
+;; more global hooks: find-file-hooks, post-command-hook
+
+;; AUCTeX mode, rocks.
+;;
+(setq load-path (cons "/opt/auctex/auctex-11.55" load-path))
+(require 'tex-site nil t)
+
+(put 'narrow-to-region 'disabled nil)
+
+;; downloads and displays comics:
+;; (require 'comics)
+
+;; use the specified color theme:
+(if (featurep 'color-theme)
+    (color-theme-dark-blue2))
+
+;; (defun command-line-diff (switch)
+;;       (let ((file1 (pop command-line-args-left))
+;;             (file2 (pop command-line-args-left)))
+;;         (ediff file1 file2)))
+    
+;;     (add-to-list 'command-switch-alist '("diff" . command-line-diff))
+    
+;;     ;; Usage: emacs -diff file1 file2
+;; (custom-set-variables
+;;  '(load-home-init-file t t))
+;; (custom-set-faces)
+
+;;;;; javascript-mode ;;;;
+(add-to-list 'auto-mode-alist (cons  "\\.js\\'" 'javascript-mode))
+(autoload 'javascript-mode "javascript" nil t)
+
+;;;; or try ecmascript-mode, it has prettier colors! ;;;;
+;; (add-to-list 'auto-mode-alist (cons  "\\.js\\'" 'ecmascript-mode))
+;; (autoload 'ecmascript-mode "ecmascript-mode" nil t)
+
+(autoload 'd-mode "d-mode" "Major mode for editing D code." t)
+(add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
+
+;;; added by emacs when I used the customize menu to change some stuff ;;;
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(TeX-PDF-mode t)
+ '(TeX-output-view-style (quote (("^dvi$" ("^landscape$" "^pstricks$\\|^pst-\\|^psfrag$") "%(o?)dvips -t landscape %d -o && gv %f") ("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "%(o?)dvips %d -o && gv %f") ("^dvi$" ("^a4\\(?:dutch\\|paper\\|wide\\)\\|sem-a4$" "^landscape$") "%(o?)xdvi %dS -paper a4r -s 0 %d") ("^dvi$" "^a4\\(?:dutch\\|paper\\|wide\\)\\|sem-a4$" "%(o?)xdvi %dS -paper a4 %d") ("^dvi$" ("^a5\\(?:comb\\|paper\\)$" "^landscape$") "%(o?)xdvi %dS -paper a5r -s 0 %d") ("^dvi$" "^a5\\(?:comb\\|paper\\)$" "%(o?)xdvi %dS -paper a5 %d") ("^dvi$" "^b5paper$" "%(o?)xdvi %dS -paper b5 %d") ("^dvi$" "^letterpaper$" "%(o?)xdvi %dS -paper us %d") ("^dvi$" "^legalpaper$" "%(o?)xdvi %dS -paper legal %d") ("^dvi$" "^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d") ("^dvi$" "." "%(o?)xdvi %dS %d") ("^pdf$" "." "acroread %o") ("^html?$" "." "netscape %o")))))
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ )
