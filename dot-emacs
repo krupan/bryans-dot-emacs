@@ -154,9 +154,6 @@
 ;; stuff, not tabs)
 (setq-default indent-tabs-mode nil)
 
-;; start up with a horizontal split
-;;(split-window-horizontally)
-
 ;;;;;;;;;;;;;;;;; Use cperl-mode instead of perl-mode ;;;;;;;;;;;;;;
 (add-to-list 'auto-mode-alist '("\\.\\([pP][Llm]\\|al\\)\\'" . cperl-mode))
 (add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
