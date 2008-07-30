@@ -47,9 +47,6 @@
 ;;; taking the plunge and getting rid of the menu too
 (menu-bar-mode -1)
 
-;;;;; scroll bar on the right side ;;;;
-;;(set-scroll-bar-mode 'right)
-
 ;;; even more hardcore, no scrollbars
 (scroll-bar-mode -1)
 
