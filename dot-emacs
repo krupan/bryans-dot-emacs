@@ -462,11 +462,6 @@ whether you are defining one at the moment or not"
 (setq cscope-do-not-update-database t)
 (setq cscope-database-file "cscope_out")
 
-;;; setting up the local install of css mode ;;;
-;; (autoload 'css-mode "css-mode" nil t)
-;; (setq auto-mode-alist       
-;;       (cons '("\\.css\\'" . css-mode) auto-mode-alist))
-
 ;; color theme, a handy collection of, well, color themes for emacs
 (condition-case nil
     (load "color-theme")
