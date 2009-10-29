@@ -111,8 +111,8 @@
     (set-default-font "-outline-Lucida Console-normal-r-normal-normal-15-90-120-120-c-90-iso10646-1"))
 
 ;; home machine:
-(if (string-match "localhost" system-name)
-    (set-default-font "Bitstream Vera Sans Mono-10"))
+(if (string-match "bmurdock-desktop" system-name)
+    (set-default-font "DejaVu Sans Mono-11"))
 
 ;; Verdana looks very pretty, but it's not exactly a monospaced
 ;; font...
