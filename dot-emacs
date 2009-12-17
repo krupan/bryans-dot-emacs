@@ -221,6 +221,9 @@
   (define-key verilog-mode-map "\M-*" nil))
 (add-hook 'verilog-mode-hook 'my-verilog-hook)
 
+(setq verilog-auto-newline nil)
+;;(setq verilog-auto-indent-on-newline t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Some custom key bindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
