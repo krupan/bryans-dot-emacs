@@ -227,7 +227,8 @@
 (add-hook 'verilog-mode-hook 'my-verilog-hook)
 
 (setq verilog-auto-newline nil)
-;;(setq verilog-auto-indent-on-newline t)
+(setq verilog-auto-lineup nil)
+(setq verilog-auto-indent-on-newline nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Some custom key bindings
