@@ -164,6 +164,11 @@
 ;; hmmmm...this doesn't work
 (setq cperl-invalid-face nil)
 
+;; modelsim do files are pretty-much TCL
+(add-to-list 'auto-mode-alist '("\\.do?\\'" . tcl-mode))
+;; xilinx ucf is kinda tcl, I think
+(add-to-list 'auto-mode-alist '("\\.ucf?\\'" . tcl-mode))
+
 (setq compile-command "buildinit")
 
 ;; set the compilation buffer to always scroll to follow output as it
