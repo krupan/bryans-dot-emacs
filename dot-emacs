@@ -221,7 +221,7 @@
                                  (local-set-key [?\C-c tab] 'indent-region)
                                  ))
 
-;; fix tags keybinding the verilog-mode breaks
+;; fix the tags keybinding that verilog-mode breaks
 (defun my-verilog-hook ()
   (define-key verilog-mode-map "\M-*" nil))
 (add-hook 'verilog-mode-hook 'my-verilog-hook)
@@ -229,6 +229,9 @@
 (setq verilog-auto-newline nil)
 (setq verilog-auto-lineup nil)
 (setq verilog-auto-indent-on-newline nil)
+(add-hook 'verilog-mode-hook
+          '(lambda ()
+             (modify-syntax-entry ?_ "." verilog-mode-syntax-table)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Some custom key bindings
