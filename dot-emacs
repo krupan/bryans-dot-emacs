@@ -200,9 +200,6 @@
 ;; new window (known as a frame in emacs land):
 (setq woman-use-own-frame nil)
 
-;; default tags table, for work at least:
-(setq tags-file-name "/vobs/clark/TAGS")
-
 ;; This is sweet!  right-click, get a list of functions in the source
 ;; file you are editing
 ;; (http://emacs.wordpress.com/2007/01/24/imenu-with-a-workaround/#comment-51)
