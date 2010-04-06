@@ -53,13 +53,8 @@
 ;;;;; scroll one line at a time ;;;;
 (setq scroll-conservatively 5)
 
-;; title bar shows name of current buffer, and current clearcase view
-;; if I'm at work
-(setq clearcase-view (getenv "VIEW_NAME"))
-(if (string-match "vcd.hp.com" system-name)
-    (setq frame-title-format '("emacs : %*%+ %b : " clearcase-view))
-  ;; else:
-  (setq frame-title-format '("emacs : %*%+ %b")))
+;; title bar shows name of current buffer and hostname
+(setq frame-title-format '("emacs on " system-name ": %*%+ %b"))
 
 ;; don't show the startup message every time, I know I'm using emacs
 ;; thanks
