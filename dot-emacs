@@ -109,6 +109,9 @@
 (if (string-match "bmurdock-desktop" system-name)
     (set-default-font "DejaVu Sans Mono-11"))
 
+(if (string-match "int.fusionio.com" system-name)
+    (set-default-font "DejaVu Sans Mono-11"))
+
 ;; Verdana looks very pretty, but it's not exactly a monospaced
 ;; font...
 (if (string-match "brzo" system-name)
