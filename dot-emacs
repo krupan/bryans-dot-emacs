@@ -221,9 +221,9 @@
 (setq verilog-auto-newline nil)
 (setq verilog-auto-lineup nil)
 (setq verilog-auto-indent-on-newline nil)
-(add-hook 'verilog-mode-hook
-          '(lambda ()
-             (modify-syntax-entry ?_ "." verilog-mode-syntax-table)))
+;; (add-hook 'verilog-mode-hook
+;;           '(lambda ()
+;;              (modify-syntax-entry ?_ "." verilog-mode-syntax-table)))
 
 (add-to-list 'auto-mode-alist '("\\.svh?\\'" . verilog-mode))
 
