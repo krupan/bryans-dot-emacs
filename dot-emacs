@@ -229,6 +229,8 @@
 ;;              (modify-syntax-entry ?_ "." verilog-mode-syntax-table)))
 
 (add-to-list 'auto-mode-alist '("\\.svh?\\'" . verilog-mode))
+(add-to-list 'auto-mode-alist '("\\.vh?\\'" . verilog-mode))
+(add-to-list 'auto-mode-alist '("\\.f?\\'" . verilog-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Some custom key bindings
