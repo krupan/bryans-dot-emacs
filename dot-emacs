@@ -610,6 +610,10 @@ whether you are defining one at the moment or not"
 (require 'erin nil t)
 (add-to-list 'auto-mode-alist '("twiki" . erin-mode))
 
+(condition-case nil
+    (load "graphviz-dot-mode")
+  (error (message "WARNING: couldn't find dot-mode")))
+
 ;;; added by emacs when I used the customize menu to change some stuff ;;;
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
