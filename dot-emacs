@@ -614,6 +614,18 @@ whether you are defining one at the moment or not"
     (load "graphviz-dot-mode")
   (error (message "WARNING: couldn't find dot-mode")))
 
+;; Load specman mode only when needed
+(autoload 'specman-mode "specman-mode" "Specman mode" t )
+;; Any files that end in .e, .e3, et cetera should be in specman mode
+(setq auto-mode-alist (append
+                       (list
+                        (cons "\\.e\\'" 'specman-mode)
+                        (cons "\\.e3\\'" 'specman-mode)
+                        (cons "\\.load\\'" 'specman-mode)
+                        (cons "\\.ecom\\'" 'specman-mode)
+                        (cons "\\.etst\\'" 'specman-mode))
+                       auto-mode-alist))
+
 ;;; added by emacs when I used the customize menu to change some stuff ;;;
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
