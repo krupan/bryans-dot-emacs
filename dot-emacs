@@ -510,19 +510,6 @@ whether you are defining one at the moment or not"
                 (nxml-mode)
                 ))))
 
-
-;; clearcase is a revision control system
-(require 'clearcase nil t)
-
-(setq clearcase-suppress-checkout-comments t)
-(if (featurep 'clearcase)
-    (define-key clearcase-prefix-map "=" 'clearcase-ediff-pred-current-buffer)
-)
-
-(if (featurep 'clearcase)
-    (define-key clearcase-prefix-map "r" 'clearcase-ediff-branch-base-current-buffer)
-)
-
 ;; subversion interface:
 (require 'psvn nil t)
 
