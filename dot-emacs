@@ -611,6 +611,8 @@ whether you are defining one at the moment or not"
 
 (require 'linum nil t)
 
+(require 'tbemail nil t)
+
 ;; Load specman mode only when needed
 (autoload 'specman-mode "specman-mode" "Specman mode" t )
 ;; Any files that end in .e, .e3, et cetera should be in specman mode
