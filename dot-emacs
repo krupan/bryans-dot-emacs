@@ -524,9 +524,6 @@ whether you are defining one at the moment or not"
 ;; subversion interface:
 (require 'psvn nil t)
 
-;; egg git mode is fun
-(require 'egg nil t)
-
 ;; guesses the c-basic-offset to use for a file
 (require 'guess-offset nil t)
 
