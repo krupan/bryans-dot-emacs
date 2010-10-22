@@ -243,6 +243,12 @@
 (add-to-list 'auto-mode-alist '("\\.vh?\\'" . verilog-mode))
 (add-to-list 'auto-mode-alist '("\\.f?\\'" . verilog-mode))
 
+;; org-mode stuff
+(setq org-log-done t)
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-cb" 'org-iswitchb)
+(setq org-return-follows-link t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Some custom key bindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
