@@ -70,6 +70,17 @@
 ;; love it, sometimes I hate it...
 (setq mouse-yank-at-point t)
 
+;; Highlight current line, I might not like this on all the time.
+(global-hl-line-mode 1)
+;; the mode-line color from color-theme-dark-blue2:
+(set-face-background 'hl-line "#3c5473")
+;; these colors were contenders too:
+;; (set-face-background 'hl-line "RoyalBlue4")
+;; (set-face-background 'hl-line "MidnightBlue")
+;; (set-face-background 'hl-line "DodgerBlue4")
+;; (set-face-background 'hl-line "DarkBlue")
+;; (set-face-background 'hl-line "navy")
+
 ;; start server so emacsclient can be used.  Allows you to type
 ;; emacsclient filename on the command line and the file is opened in
 ;; the currently running emacs.  Actually I always do emacsclient -n
