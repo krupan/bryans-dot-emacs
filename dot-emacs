@@ -178,7 +178,7 @@
 ;; xilinx ucf is kinda tcl, I think
 (add-to-list 'auto-mode-alist '("\\.ucf?\\'" . tcl-mode))
 
-(setq compile-command "buildinit")
+(setq compile-command "IOMONO=1 xenv ./sim.py cmd_dma")
 
 ;; set the compilation buffer to always scroll to follow output as it
 ;; comes in.
