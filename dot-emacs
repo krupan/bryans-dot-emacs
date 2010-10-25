@@ -246,6 +246,7 @@
 ;; org-mode stuff
 (setq org-log-done t)
 (global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
 (setq org-return-follows-link t)
 
@@ -290,7 +291,6 @@
 (global-set-key "\C-csw" 'ispell-word)
 (global-set-key "\C-csc" 'ispell-comments-and-strings)
 (global-set-key "\C-csr" 'ispell-region)
-(global-set-key "\C-ca" 'align-regexp)
 (global-set-key "\C-co" 'occur)
 (global-set-key [tab] 'smart-tab)
 (global-set-key [C-tab] 'other-window)
