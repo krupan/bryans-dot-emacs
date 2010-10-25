@@ -539,28 +539,8 @@ whether you are defining one at the moment or not"
 ;; guesses the c-basic-offset to use for a file
 (require 'guess-offset nil t)
 
-;; These two work together to give you nice word-wrapping for files
-;; with long lines.  They don't save the line breaks they insert, it's
-;; a view only thing, kind of like if you turn on word-wrap in
-;; notepad.
-
-(condition-case nil
-    (load "longlines")
-  (error (message "WARNING: couldn't find longlines")))
-
-;; Apparently wrap-mode has been folded into longlines.  I don't know
-;; how it will behave with that blosxom function at this point (see
-;; note below)
-;;
-;; (condition-case nil
-;;     (load "wrap")
-;;   (error (message "WARNING: couldn't find wrap")))
-;;
-;; except that in conjuction with the blosxom
-;; save-buffer-same-timestamp function things get really messed up, so
-;; don't automatically make all text-mode buffers use wrap-mode.
-;;(add-to-list 'auto-mode-alist '("\\.\\(txt\\|text\\)\\'" . wrap-mode))
-
+;; wrap long lines in text modes:
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
 
 ;; for dealing with fun (annoying?) camelCaseWords
 ;; http://www.hotdispatch.com/download/ip/14312566/739119894/camelCase.tgz
