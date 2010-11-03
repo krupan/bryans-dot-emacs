@@ -178,6 +178,9 @@
 ;; xilinx ucf is kinda tcl, I think
 (add-to-list 'auto-mode-alist '("\\.ucf?\\'" . tcl-mode))
 
+;; conf mode for hgrc files
+(add-to-list 'auto-mode-alist '("\\hgrc?\\'" . conf-mode))
+
 (setq compile-command "IOMONO=1 xenv ./sim.py cmd_dma")
 
 ;; set the compilation buffer to always scroll to follow output as it
