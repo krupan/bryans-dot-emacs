@@ -73,9 +73,9 @@
 ;; Highlight current line, I might not like this on all the time.
 (global-hl-line-mode 1)
 ;; the mode-line color from color-theme-dark-blue2:
-(set-face-background 'hl-line "#3c5473")
+;;(set-face-background 'hl-line "#3c5473")
 ;; these colors were contenders too:
-;; (set-face-background 'hl-line "RoyalBlue4")
+(set-face-background 'hl-line "RoyalBlue4")
 ;; (set-face-background 'hl-line "MidnightBlue")
 ;; (set-face-background 'hl-line "DodgerBlue4")
 ;; (set-face-background 'hl-line "DarkBlue")
