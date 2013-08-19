@@ -249,6 +249,8 @@
 (setq org-return-follows-link t)
 ;; org-agenda
 (setq org-agenda-files (list "~/Documents/scouts/troop_311/notes.org"))
+;; view next 30 days by default, not just a week
+(setq org-agenda-span 30)
 
 ;; google calendar gets the timezone wrong, but the internet
 ;; (http://comments.gmane.org/gmane.emacs.orgmode/30210) says this
