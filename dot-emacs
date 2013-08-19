@@ -247,6 +247,8 @@
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
 (setq org-return-follows-link t)
+;; org-agenda
+(setq org-agenda-files (list "~/Documents/scouts/troop_311/notes.org"))
 
 ;; google calendar gets the timezone wrong, but the internet
 ;; (http://comments.gmane.org/gmane.emacs.orgmode/30210) says this
