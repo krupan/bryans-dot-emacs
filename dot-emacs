@@ -248,6 +248,12 @@
 (global-set-key "\C-cb" 'org-iswitchb)
 (setq org-return-follows-link t)
 
+;; google calendar gets the timezone wrong, but the internet
+;; (http://comments.gmane.org/gmane.emacs.orgmode/30210) says this
+;; will fix it:
+(setq org-icalendar-use-UTC-date-time t)
+
+
 ;; mac stuff:
 (setq mac-option-key-is-meta nil)
 (setq mac-command-key-is-meta t)
