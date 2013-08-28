@@ -11,32 +11,11 @@
 ;; settings and default modes
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Are we running XEmacs or Emacs? (though I never run xemacs, and
-;; never use this test really...
-(defvar running-xemacs (string-match "XEmacs\\|Lucid" emacs-version))
-
-;; Turn on font-lock mode for Emacs
-(cond ((not running-xemacs)
-       (global-font-lock-mode t)
-       ))
-
 ;; Highlight matching parenthesis
 (show-paren-mode t)
 
-;; Visual feedback on selections
-(setq-default transient-mark-mode t)
-
 ;; hitting delete will delete the highlighted region
 (pending-delete-mode 1)
-
-;; Enable wheelmouse support by default
-(cond (window-system
-       (mwheel-install)
-       ))
-
-;;;;;;;; Don't truncate.  Wrap, or fold lines of split windows ;;;
-(setq truncate-partial-width-windows nil)
-(setq truncate-lines nil)
 
 ;;;; The MODE Line ;;;;
 (column-number-mode 1)
@@ -49,6 +28,10 @@
 
 ;;; even more hardcore, no scrollbars
 (scroll-bar-mode -1)
+
+;; enable ido-mode
+(ido-mode t)
+(ido-everywhere t)
 
 ;;;;; scroll one line at a time ;;;;
 (setq scroll-conservatively 5)
@@ -72,74 +55,21 @@
 
 ;; Highlight current line, I might not like this on all the time.
 (global-hl-line-mode 1)
-;; the mode-line color from color-theme-dark-blue2:
-;;(set-face-background 'hl-line "#3c5473")
-;; these colors were contenders too:
 (set-face-background 'hl-line "RoyalBlue4")
-;; (set-face-background 'hl-line "MidnightBlue")
-;; (set-face-background 'hl-line "DodgerBlue4")
-;; (set-face-background 'hl-line "DarkBlue")
-;; (set-face-background 'hl-line "navy")
 
 ;; start server so emacsclient can be used.  Allows you to type
 ;; emacsclient filename on the command line and the file is opened in
 ;; the currently running emacs.  Actually I always do emacsclient -n
-;; filename (actually a script called iv, as opposed to vi)
-(condition-case nil
-    (server-start)
-  (error (message "WARNING: couldn't start emacs-server")))
-
-;; minibuffer completion preview.  Looks kinda like ido-mode
-(icomplete-mode 99)
+;; filename (actually a script called e)
+(ignore-errors (server-start))
 
 ;;;;;;;;;;;;;;;;;; I need a bit bigger default font ;;;;;;;;;;;;;;;;;
 ;;
 ;; all about fonts in emacs:
 ;; http://www.cs.huji.ac.il/support/emacs/font.html
-
-;; work linux machines:
-(if (string-match "vcd.hp.com" system-name)
-    (set-default-font "9x15"))
-
-(if (string-match "lnxvcbdm" system-name)
-    (set-default-font "Bitstream Vera Sans Mono-10"))
-
-(if (string-match "bryan-work-laptop" system-name)
-    (set-default-font "Bitstream Vera Sans Mono-8"))
-;    (set-default-font "Monospace-8"))
-
-;; on windows, Lucida console is beautiful
-(if (string-match "VCSBRMU3" system-name)
-    (set-default-font "-outline-Lucida Console-normal-r-normal-normal-15-90-120-120-c-90-iso10646-1"))
-
-(if (string-match "VCSBRMU1" system-name)
-;;    (set-default-font "-raster-Courier-normal-r-normal-normal-16-120-96-96-c-90-iso10646-1"))
-    (set-default-font "-outline-Lucida Console-normal-r-normal-normal-15-90-120-120-c-90-iso10646-1"))
-
-;; home machine:
-(if (string-match "bmurdock-desktop" system-name)
-    (set-default-font "DejaVu Sans Mono-11"))
-
-(if (string-match "int.fusionio.com" system-name)
-    (set-default-font "DejaVu Sans Mono-11"))
-
-;;;;;;;;;;;;;;;;; stop beeping so much!! ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (setq ring-bell-function
-;;       (lambda ()
-;; (unless (memq this-command
-;; 		      '(isearch-abort abort-recursive-edit 
-;; 				      exit-minibuffer keyboard-quit))
-;; 	  (ding))))
-
-;; the above helps a little, this totally turns it off and replaces it
-;; with a flash:
-;; (setq visible-bell 1)
-
-;; Or you can have it play a sound, instead of the normal annoying beep
-(setq ring-bell-function (lambda ()
-			   (call-process
-			    "play" nil 0 nil
-			    "/usr/share/sounds/gtk-events/clicked.wav")))
+(if (string-match "bryan-murdock" system-name)
+     (set-default-font
+      "-apple-Menlo-medium-normal-normal-*-14-*-*-*-m-0-iso10646-1"))
 
 ;;;;;;; ediff buffers sid-by-side, like it should ;;;;;;;;;;
 (setq ediff-split-window-function 'split-window-horizontally)
@@ -181,6 +111,10 @@
 ;; set the compilation buffer to always scroll to follow output as it
 ;; comes in.
 (setq compilation-scroll-output 1)
+
+;; enable this command that is disabled by default because it's
+;; "confusing"
+(put 'narrow-to-region 'disabled nil)
 
 ;;;;;;;;;;;;;; store backup files in ~/.backups-emacs/ ;;;;;;;;;;
 (setq
@@ -257,6 +191,8 @@
 ;; will fix it:
 (setq org-icalendar-use-UTC-date-time t)
 
+;; wrap long lines in text modes:
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
 
 ;; mac stuff:
 (setq mac-option-key-is-meta nil)
@@ -293,8 +229,6 @@
 (global-set-key "\C-cv" 'view-file)
 (global-set-key "\C-ceb" 'ediff-buffers)
 (global-set-key "\C-cef" 'ediff)
-(global-set-key "\C-cc" 'comment-region)
-(global-set-key "\C-cu" 'uncomment-region)
 (global-set-key "\C-csb" 'ispell-buffer)
 (global-set-key "\C-csw" 'ispell-word)
 (global-set-key "\C-csc" 'ispell-comments-and-strings)
@@ -302,9 +236,7 @@
 (global-set-key "\C-co" 'occur)
 (global-set-key [tab] 'smart-tab)
 (global-set-key [C-tab] 'other-window)
-
 (global-set-key [f5] 'eval-buffer)
-(global-set-key [f6] 'cvs-examine)
 (global-set-key [f7] 'revert-buffer)
 (global-set-key [f8] 'start-or-end-macro)
 (global-set-key [f9] 'call-last-kbd-macro)
@@ -336,84 +268,12 @@
 
 (global-set-key [?\C-.] 'point-to-bottom)
 
-
-;; Use tab to complete and indent stuff.  Got this from
-;; http://www.emacswiki.org/cgi-bin/wiki/TabCompletion, made some mods
-;; so it wqould work with emacs 21
-(defun smart-tab ()
-      "This smart tab is minibuffer compliant: it acts as usual in
-    the minibuffer. Else, if mark is active, indents region. Else if
-    point is at the end of a symbol, expands it. Else indents the
-    current line."
-      (interactive)
-      ;; change this to (if (minibufferp) when I can finally ditch the
-      ;; old version of emacs at work.
-      (if (string-match "Minibuf" (buffer-name))
-          (unless (minibuffer-complete)
-            (dabbrev-expand nil))
-        (if mark-active
-            (indent-region (region-beginning)
-                           (region-end))
-          ;; add an underscore after the '\\' when I can finally ditch
-          ;; the old version of emacs at work.
-          (if (looking-at "\\>")
-              (dabbrev-expand nil)
-            (indent-for-tab-command)))))
-
 ;; this is used by my auto-save hack:
 (defun save-buffer-if-visiting-file (&optional args)
   "Save the current buffer only if it is visiting a file"
   (interactive)
   (if (and (buffer-file-name) (buffer-modified-p))
       (save-buffer args)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; doesn't change the timestamp on blosxom entries when you edit
-;; them. Very nice.  I got this from:
-;; http://www.lathi.net/twiki-bin/view/Main/EmacsAndBlosxom
-;;
-;; I just noticed that this seems to be used for some non-blosxom .txt
-;; files, at least on my emacs-snapshot.  Weird.  I need to get off of
-;; blosxom, as if I'll ever have time to do that at work again.
-
-(defun save-buffer-same-timestamp (&optional args)
-  "Save the current buffer in visited file if modified.  Versions are
-controlled with ARGS as with `save-buffer'.  The difference between
-this command and save-timestamp is that this command saves the
-modification time of the file from disk and resets it after the file
-is saved."
-  (interactive)
-  (let* ((buffer (current-buffer))
-         (file-name (if (tramp-tramp-file-p (buffer-file-name))
-                        (tramp-file-name-path
-                         (tramp-dissect-file-name
-                          (tramp-completion-handle-expand-file-name (buffer-file-name))))
-                      (expand-file-name (buffer-file-name))))
-         (file-attributes (file-attributes (buffer-file-name)))
-         (time-string (if file-attributes
-                          (format-time-string "%Y%m%d%H%M.%S"
-                                              (nth 5 file-attributes))))
-         (shell-cmd (if (tramp-tramp-file-p (buffer-file-name)) 'tramp-handle-shell-command 'shell-command)))
-
-    (save-buffer args)
-    (if (and (stringp time-string)
-             (= 0 (funcall shell-cmd
-                           (format "touch -t %s %s"
-                                   time-string file-name)))
-             (set-buffer buffer)
-             (revert-buffer nil t))
-        (message "Wrote %s, set timestamp to %s" file-name time-string))))
-
-(defvar blosxom-file-regexp "blosxom.*txt"
-  "Regular expression matching files that are stories for a blosxom blog")
-
-(defun blosxom-find-file-hook ()
-  "A function to be bound as a `find-file-hooks' that will rebind
-\"C-x C-s\" to `save-buffer-same-timestamp'."
-  (if (string-match blosxom-file-regexp (buffer-file-name))
-      (local-set-key (kbd "C-x C-s") 'save-buffer-same-timestamp)))
-
-(add-hook 'find-file-hooks 'blosxom-find-file-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Got these from Yegge:
@@ -482,160 +342,70 @@ whether you are defining one at the moment or not"
 ;; Hopefully everything above this works for the basic emacs
 ;; distribution.  Every below this is for stuff I've downloaded.
 ;;
-;; I've tried to use autoload where I can so if these aren't installed
-;; in ~/elisp on a given system emacs won't complain.
+;; I'm now attempting to use el-get to install all packages not
+;; included with emacs, following the advice here:
 ;;
-;; I just learned that another way to keep emacs from complaining if
-;; something isn't found is to do a "soft require."  Explained here:
+;; http://danielsz.github.io/towards-a-declarative-dependency-management-s/index.html/
 ;;
-;; http://www.emacswiki.org/cgi-bin/wiki/RequiredFeatureDefined
+;; so far, I really like it.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;;; set local load path for downloaded modes ;;;;;;
-(defun prepend-path ( my-path )
-  (setq load-path (cons (expand-file-name my-path) load-path)))
-(defun append-path ( my-path )
-  (setq load-path (append load-path (list (expand-file-name my-path)))))
-;; Look first in the directory ~/elisp for elisp files
-(prepend-path "~/elisp")
+;; el-get stuff:
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+(unless (require 'el-get nil 'noerror)
+  (with-current-buffer
+      (url-retrieve-synchronously
+       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
+    (let (el-get-master-branch)
+      (goto-char (point-max))
+      (eval-print-last-sexp))))
 
-;; get cscope integrated with emacs
-(add-to-list 'load-path "~/elisp/xcscope/")
-(condition-case nil
-    (require 'xcscope)
-  (error (message "WARNING: couldn't find cscope")))
-(setq cscope-initial-directory "/vobs/clark")
-(setq cscope-do-not-update-database t)
-(setq cscope-database-file "cscope_out")
+;; keep this sorted alphabetically (use sort-lines) (NOTE: color-theme
+;; is just for color-theme-dark-blue2 and color-theme-tty-dark for, it
+;; would be cool if I could port just those two themes over to the new
+;; theme system).
+(defvar my-packages
+  '(
+    ;; REVISIT: broken, can't find autoconf on mac?: auctex
+    ;; REVISIT: no el-get for tbemail, submit patch to el-get?
+    color-theme
+    graphviz-dot-mode
+    guess-offset
+    ido-ubiquitous
+    smart-tab
+    xcscope
+    yaml-mode
+    )
+  "List of packages that I like.")
+(el-get-cleanup my-packages)
+(el-get 'sync my-packages)
 
-;; color theme, a handy collection of, well, color themes for emacs
-(condition-case nil
-    (load "color-theme")
-  (error (message "WARNING: couldn't find color-theme")))
-
-;;; cool buffer switching and file opening ;;;
-(condition-case nil
-    (load "ido")
-  (error (message "WARNING: couldn't find ido-mode")))
-(if (featurep 'ido)
-    (ido-mode))
-
-;;;; nxml-mode, it rocks:
-(condition-case nil
-    (load "nxml-mode/rng-auto.el")
-  ;; if that doesn't work, load my downloaded version:
-  (error (condition-case nil
-      (load "nxml-mode/nxml-mode-20041004/rng-auto.el")
-    (error (message "WARNING: couldn't find nxml-mode")))))
-
-(setq nxml-slash-auto-complete-flag t)
-(add-to-list 'auto-mode-alist
-              (cons (concat "\\." (regexp-opt '("xml" "xsd" "sch" "rng" "xslt" "svg" "rss" "xmlr" "xsl" "html" "htm" "inc") t) "\\'")
-                    'nxml-mode))
-(fset 'html-mode 'nxml-mode)
-(add-hook 'hack-local-variables-hook
-          (lambda ()
-            (save-excursion
-              (when (search-forward-regexp "^<\\?xml" 6 0)
-                (nxml-mode)
-                ))))
-
-;; subversion interface:
-(require 'psvn nil t)
-
-;; guesses the c-basic-offset to use for a file
-(require 'guess-offset nil t)
-
-;; wrap long lines in text modes:
-(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
-
-;; for dealing with fun (annoying?) camelCaseWords
-;; http://www.hotdispatch.com/download/ip/14312566/739119894/camelCase.tgz
-(condition-case nil
-    (load "camelCase-mode.elc")
-  (error (message "WARNING: couldn't find camelCase")))
-
-(add-hook 'java-mode-hook '(lambda () (camelCase-mode 1)))
-(add-hook 'c-mode-common-hook '(lambda () (camelCase-mode 1)))
-
-;; these sound cool for use with camelCase-mode, don't know how yet:
-;; more global hooks: find-file-hooks, post-command-hook
-
-;; AUCTeX mode, rocks.
+;; settings for these modes, after el-get has loaded everything.  Got
+;; this after-init-hook advice from:
+;; http://www.emacswiki.org/emacs/ELPA
 ;;
-(setq load-path (cons "/opt/auctex/auctex-11.55" load-path))
-(require 'tex-site nil t)
+;; I really wanted the eval-after-load thing from that page to work,
+;; it looked cleaner, but it just didn't work.  Something different
+;; about el-get that breaks that?  I don't know.
+(add-hook 'after-init-hook
+          (lambda()
+            (if window-system
+                (color-theme-dark-blue2)
+              (color-theme-tty-dark))
+            (ido-ubiquitous-mode t)))
 
-(put 'narrow-to-region 'disabled nil)
-
-;; downloads and displays comics:
-;; (require 'comics)
-
-;; use the specified color theme:
-(if (featurep 'color-theme)
-    (if window-system
-        (color-theme-dark-blue2)
-      (color-theme-tty-dark)))
-
-;; (defun command-line-diff (switch)
-;;       (let ((file1 (pop command-line-args-left))
-;;             (file2 (pop command-line-args-left)))
-;;         (ediff file1 file2)))
-    
-;;     (add-to-list 'command-switch-alist '("diff" . command-line-diff))
-    
-;;     ;; Usage: emacs -diff file1 file2
-;; (custom-set-variables
-;;  '(load-home-init-file t t))
-;; (custom-set-faces)
-
-;;;;; javascript-mode ;;;;
-(add-to-list 'auto-mode-alist (cons  "\\.js\\'" 'javascript-mode))
-(autoload 'javascript-mode "javascript" nil t)
-
-;;;; or try ecmascript-mode, it has prettier colors! ;;;;
-;; (add-to-list 'auto-mode-alist (cons  "\\.js\\'" 'ecmascript-mode))
-;; (autoload 'ecmascript-mode "ecmascript-mode" nil t)
-
-(autoload 'd-mode "d-mode" "Major mode for editing D code." t)
-(add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
-
-;; twiki editing mode
-(require 'erin nil t)
-(add-to-list 'auto-mode-alist '("twiki" . erin-mode))
-
-(condition-case nil
-    (load "graphviz-dot-mode")
-  (error (message "WARNING: couldn't find dot-mode")))
-
-(require 'linum nil t)
-
-(require 'tbemail nil t)
-
-;; Load specman mode only when needed
-(autoload 'specman-mode "specman-mode" "Specman mode" t )
-;; Any files that end in .e, .e3, et cetera should be in specman mode
-(setq auto-mode-alist (append
-                       (list
-                        (cons "\\.e\\'" 'specman-mode)
-                        (cons "\\.e3\\'" 'specman-mode)
-                        (cons "\\.load\\'" 'specman-mode)
-                        (cons "\\.ecom\\'" 'specman-mode)
-                        (cons "\\.etst\\'" 'specman-mode))
-                       auto-mode-alist))
 
 ;;; added by emacs when I used the customize menu to change some stuff ;;;
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(TeX-PDF-mode t)
- '(TeX-output-view-style (quote (("^dvi$" ("^landscape$" "^pstricks$\\|^pst-\\|^psfrag$") "%(o?)dvips -t landscape %d -o && gv %f") ("^dvi$" "^pstricks$\\|^pst-\\|^psfrag$" "%(o?)dvips %d -o && gv %f") ("^dvi$" ("^a4\\(?:dutch\\|paper\\|wide\\)\\|sem-a4$" "^landscape$") "%(o?)xdvi %dS -paper a4r -s 0 %d") ("^dvi$" "^a4\\(?:dutch\\|paper\\|wide\\)\\|sem-a4$" "%(o?)xdvi %dS -paper a4 %d") ("^dvi$" ("^a5\\(?:comb\\|paper\\)$" "^landscape$") "%(o?)xdvi %dS -paper a5r -s 0 %d") ("^dvi$" "^a5\\(?:comb\\|paper\\)$" "%(o?)xdvi %dS -paper a5 %d") ("^dvi$" "^b5paper$" "%(o?)xdvi %dS -paper b5 %d") ("^dvi$" "^letterpaper$" "%(o?)xdvi %dS -paper us %d") ("^dvi$" "^legalpaper$" "%(o?)xdvi %dS -paper legal %d") ("^dvi$" "^executivepaper$" "%(o?)xdvi %dS -paper 7.25x10.5in %d") ("^dvi$" "." "%(o?)xdvi %dS %d") ("^pdf$" "." "evince %o") ("^html?$" "." "netscape %o")))))
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes (quote ("d6a00ef5e53adf9b6fe417d2b4404895f26210c52bb8716971be106550cea257" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default))))
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  )
