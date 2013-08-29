@@ -238,6 +238,17 @@
            (org . t)
            (latex . t)))))
 
+;; add support to org-mode for the IEEEtran latex class:
+(eval-after-load 'org-latex
+  '(add-to-list 'org-export-latex-classes
+               '("IEEEtran"
+                 "\\documentclass{IEEEtran}"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+
 ;; mac stuff:
 (setq mac-option-key-is-meta nil)
 (setq mac-command-key-is-meta t)
