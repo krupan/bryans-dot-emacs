@@ -157,14 +157,27 @@
                                  (local-set-key [?\C-c tab] 'indent-region)
                                  ))
 
+(autoload 'verilog-mode "/tools/verilog/verilog-mode"  "Verilog mode" t )
 ;; fix the tags keybinding that verilog-mode breaks
 (defun my-verilog-hook ()
-  (define-key verilog-mode-map "\M-*" nil))
+  ;; don't let verilog mode take over pop-tag-mark:
+  (define-key verilog-mode-map "\M-*" nil)
+  ;; electric-verilog-semi was driving me nuts:
+  (define-key verilog-mode-map ";" nil)
+  ;; the (setq verilog-auto-indent-on-newline nil) below wasn't
+  ;; stopping the auto indentation, but this does:
+  (define-key verilog-mode-map "\r" nil)
+  ;; at least with emacs -nw tab was not being bound to smart-tab like
+  ;; I wanted, this fixes it:
+  (define-key verilog-mode-map "\t" nil)
+  (setq verilog-auto-lineup 'ignore)
+  (setq verilog-auto-newline nil)
+  (setq verilog-auto-indent-on-newline nil)
+  (defun verilog-list-methods()
+    (interactive)
+    (occur "\\( function \\| task \\)" nil)))
 (add-hook 'verilog-mode-hook 'my-verilog-hook)
 
-(setq verilog-auto-newline nil)
-(setq verilog-auto-lineup nil)
-(setq verilog-auto-indent-on-newline nil)
 ;; (add-hook 'verilog-mode-hook
 ;;           '(lambda ()
 ;;              (modify-syntax-entry ?_ "." verilog-mode-syntax-table)))
