@@ -249,6 +249,19 @@
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 
+;; highlight long lines, from:
+;; http://stackoverflow.com/questions/6344474/how-can-i-make-emacs-highlight-lines-that-go-over-80-chars
+(defun highlight-long-lines ()
+  "highlights lines longer than 80 characters"
+  (interactive)
+  (highlight-lines-matching-regexp ".\\{81\\}" (quote hi-green)))
+
+;; actually, this is more useful to me than the above
+(defun show-long-lines ()
+  "goes to the next line longer than 80 characters"
+  (interactive)
+  (occur ".\\{81\\}"))
+
 ;; mac stuff:
 (setq mac-option-key-is-meta nil)
 (setq mac-command-key-is-meta t)
