@@ -406,6 +406,34 @@ whether you are defining one at the moment or not"
           (end-kbd-macro))
       (start-kbd-macro arg)))
 
+;; kill-matching-buffers-by-filename is handy when you have opened a
+;; bunch of files from a certain directory, and now you are done
+;; working on that group of files.  Got this from:
+;; http://keypod.net/wordpress/2008/08/30/emacs-kill-matching-buffers-by/
+(defun act-on-buffers (pred action)
+  (let ((count 0))
+	(dolist(buffer (buffer-list))
+	  (when (funcall pred buffer)
+		(setq count (1+ count))
+		(funcall action buffer)))
+	count))
+ 
+(defun kill-matching-buffers-by (acc)
+  "Kill buffers whose name matches the input"
+  (let* 
+	  ((re (read-string (format "kill buffers matching: ")))
+	   (match (function 
+			   (lambda (buf) 
+				 (string-match re (funcall acc buf)))))
+	   (kill #'(lambda (buf) (kill-buffer buf)))
+	   (count (act-on-buffers match kill)))
+ 
+    (message "%d buffer(s) killed" count)))
+ 
+(defun kill-matching-buffers-by-filename ()
+  (interactive)
+  (kill-matching-buffers-by #'(lambda (b) (or (buffer-file-name b) ""))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Hopefully everything above this works for the basic emacs
