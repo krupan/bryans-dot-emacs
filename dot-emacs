@@ -488,6 +488,30 @@ whether you are defining one at the moment or not"
 
 (global-set-key "\M-i" 'ido-goto-symbol) ; or any key you see fit
 
+(defun insert-uvm-info()
+  "Insert a uvm_info template with psprintf"
+  (interactive)
+  (insert "`uvm_info(get_full_name(), \"\", UVM_MEDIUM)")
+  ;; if the above string changes, you might want to change this to so
+  ;; the cursor ends up inside the string where you are going to start
+  ;; typing next:
+  (backward-char 14)
+)
+
+(global-set-key "\C-ci" 'insert-uvm-info)
+
+(defun insert-uvm-info-with-psprintf()
+  "Insert a uvm_info template with psprintf"
+  (interactive)
+  (insert "`uvm_info(get_full_name(), $psprintf(\"\", ), UVM_MEDIUM)")
+  ;; if the above string changes, you might want to change this to so
+  ;; the cursor ends up inside the string where you are going to start
+  ;; typing next:
+  (backward-char 17)
+)
+
+(global-set-key "\C-cp" 'insert-uvm-info-with-psprintf)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Hopefully everything above this works for the basic emacs
