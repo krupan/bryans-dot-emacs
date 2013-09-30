@@ -78,7 +78,7 @@
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
 ;; allows you to undow changes to your window configureations (like
-;; after an ediff session) by doing c-x left-arror (or right-arrow for
+;; after an ediff session) by doing c-c left-arrow (or right-arrow for
 ;; a redo).  Very handy
 (winner-mode t)
 
