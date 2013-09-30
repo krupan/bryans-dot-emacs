@@ -303,6 +303,7 @@
 (global-set-key "\C-csr" 'ispell-region)
 (global-set-key "\C-co" 'occur)
 (global-set-key [tab] 'smart-tab)
+(global-set-key "\t" 'smart-tab)
 (global-set-key [C-tab] 'other-window)
 (global-set-key [f5] 'eval-buffer)
 (global-set-key [f7] 'revert-buffer)
