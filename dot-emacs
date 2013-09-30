@@ -353,18 +353,17 @@ whether you are defining one at the moment or not"
 
 ;; el-get stuff:
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+(setq el-get-user-package-directory "~/.emacs.d/packages.d/")
 (unless (require 'el-get nil 'noerror)
   (with-current-buffer
       (url-retrieve-synchronously
        "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-    (let (el-get-master-branch)
-      (goto-char (point-max))
-      (eval-print-last-sexp))))
+    (goto-char (point-max))
+    (eval-print-last-sexp)))
 
 ;; keep this sorted alphabetically (use sort-lines) (NOTE: color-theme
-;; is just for color-theme-dark-blue2 and color-theme-tty-dark for, it
-;; would be cool if I could port just those two themes over to the new
-;; theme system).
+;; is just for color-theme-dark-blue2, it would be cool if I could
+;; port just that theme over to the new theme system).
 (defvar my-packages
   '(
     ;; REVISIT: broken, can't find autoconf on mac?: auctex
@@ -372,28 +371,39 @@ whether you are defining one at the moment or not"
     color-theme
     graphviz-dot-mode
     guess-offset
-    ido-ubiquitous
+;; el-get freaks out about this package now...
+;;    ido-ubiquitous
     smart-tab
     xcscope
     yaml-mode
     )
   "List of packages that I like.")
-(el-get-cleanup my-packages)
+
+;; Not that as long as an el-get recipe in this list does not define a
+;; :type property then it will get merged with the original recipe of
+;; the same name.
+(setq el-get-sources '((:name color-theme
+                              :after (if window-system
+                                         (color-theme-dark-blue2)
+                                       (color-theme-tty-dark)))))
+;; Why did this go away?
+;(el-get-cleanup my-packages)
 (el-get 'sync my-packages)
 
-;; settings for these modes, after el-get has loaded everything.  Got
+;; set default color theme, after el-get has loaded everything.  Got
 ;; this after-init-hook advice from:
 ;; http://www.emacswiki.org/emacs/ELPA
 ;;
 ;; I really wanted the eval-after-load thing from that page to work,
 ;; it looked cleaner, but it just didn't work.  Something different
 ;; about el-get that breaks that?  I don't know.
-(add-hook 'after-init-hook
-          (lambda()
-            (if window-system
-                (color-theme-dark-blue2)
-              (color-theme-tty-dark))
-            (ido-ubiquitous-mode t)))
+;; (add-hook 'after-init-hook
+;;           (lambda()
+;;             (if window-system
+;;                 (color-theme-dark-blue2)
+;;               (color-theme-tty-dark))
+;; ;            (ido-ubiquitous-mode t)
+;; ))
 
 
 ;;; added by emacs when I used the customize menu to change some stuff ;;;
