@@ -193,7 +193,11 @@
 (global-set-key "\C-cb" 'org-iswitchb)
 (setq org-return-follows-link t)
 ;; org-agenda
-(setq org-agenda-files (list "~/Documents/scouts/troop_311/notes.org"))
+(if (string-match "hdlvm-bmurdock" system-name)
+    (setq org-agenda-files (list "~/work/documents/work-notes.org"
+                                 "~/work/documents/fio-nands.org"))
+  (setq org-agenda-files (list "~/Documents/scouts/troop_311/notes.org")))
+
 ;; view next 30 days by default, not just a week
 (setq org-agenda-span 30)
 
