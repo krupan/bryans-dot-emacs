@@ -525,6 +525,12 @@ whether you are defining one at the moment or not"
 (add-to-list 'which-func-modes 'org-mode)
 (which-func-mode 1)
 
+;; include directory name in buffers visiting files that have the same
+;; name:
+(require 'uniquify nil t)
+(setq uniquify-buffer-name-style 'post-forward)
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Hopefully everything above this works for the basic emacs
