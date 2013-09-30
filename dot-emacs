@@ -546,6 +546,7 @@ whether you are defining one at the moment or not"
     color-theme
     graphviz-dot-mode
     guess-offset
+    jinja2-mode ;; or I could try just jinja.
 ;; el-get freaks out about this package now...
 ;;    ido-ubiquitous
     smart-tab
