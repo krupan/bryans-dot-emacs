@@ -249,6 +249,10 @@
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 
+;; turns org blocks into LaTeX environments and HTML divs.  See:
+;; http://orgmode.org/worg/org-contrib/org-special-blocks.html
+(require 'org-special-blocks nil t)
+
 ;; highlight long lines, from:
 ;; http://stackoverflow.com/questions/6344474/how-can-i-make-emacs-highlight-lines-that-go-over-80-chars
 (defun highlight-long-lines ()
@@ -586,6 +590,7 @@ whether you are defining one at the moment or not"
 (require 'which-func nil t)
 (add-to-list 'which-func-modes 'org-mode)
 (which-func-mode 1)
+
 ;;; added by emacs when I used the customize menu to change some stuff ;;;
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
