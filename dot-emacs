@@ -520,6 +520,11 @@ whether you are defining one at the moment or not"
 
 (global-set-key "\C-cp" 'insert-uvm-info-with-psprintf)
 
+;; display which function your cursor is in down in the mode line
+(require 'which-func nil t)
+(add-to-list 'which-func-modes 'org-mode)
+(which-func-mode 1)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Hopefully everything above this works for the basic emacs
@@ -589,11 +594,6 @@ whether you are defining one at the moment or not"
 ;; ;            (ido-ubiquitous-mode t)
 ;; ))
 
-
-;; display which function your cursor is in down in the mode line
-(require 'which-func nil t)
-(add-to-list 'which-func-modes 'org-mode)
-(which-func-mode 1)
 
 ;;; added by emacs when I used the customize menu to change some stuff ;;;
 (custom-set-variables
