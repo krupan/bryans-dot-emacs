@@ -552,8 +552,9 @@ whether you are defining one at the moment or not"
   (with-current-buffer
       (url-retrieve-synchronously
        "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-    (goto-char (point-max))
-    (eval-print-last-sexp)))
+    (let (el-get-master-branch)
+      (goto-char (point-max))
+      (eval-print-last-sexp))))
 
 ;; keep this sorted alphabetically (use sort-lines) (NOTE: color-theme
 ;; is just for color-theme-dark-blue2, it would be cool if I could
@@ -581,8 +582,7 @@ whether you are defining one at the moment or not"
                               :after (if window-system
                                          (color-theme-dark-blue2)
                                        (color-theme-tty-dark)))))
-;; Why did this go away?
-;(el-get-cleanup my-packages)
+(el-get-cleanup my-packages)
 (el-get 'sync my-packages)
 
 ;; set default color theme, after el-get has loaded everything.  Got
