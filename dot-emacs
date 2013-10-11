@@ -567,8 +567,7 @@ whether you are defining one at the moment or not"
     graphviz-dot-mode
     guess-offset
     jinja
-;; el-get freaks out about this package now...
-;;    ido-ubiquitous
+    ido-ubiquitous
     smart-tab
     xcscope
     yaml-mode
@@ -581,25 +580,14 @@ whether you are defining one at the moment or not"
 (setq el-get-sources '((:name color-theme
                               :after (if window-system
                                          (color-theme-dark-blue2)
-                                       (color-theme-tty-dark)))))
+                                       (color-theme-tty-dark)))
+                       (:name ido-ubiquitous
+                              :after (ido-ubiquitous-mode t))))
+
+;; workaround: https://github.com/dimitri/el-get/issues/1407
+(package-initialize)
 (el-get-cleanup my-packages)
 (el-get 'sync my-packages)
-
-;; set default color theme, after el-get has loaded everything.  Got
-;; this after-init-hook advice from:
-;; http://www.emacswiki.org/emacs/ELPA
-;;
-;; I really wanted the eval-after-load thing from that page to work,
-;; it looked cleaner, but it just didn't work.  Something different
-;; about el-get that breaks that?  I don't know.
-;; (add-hook 'after-init-hook
-;;           (lambda()
-;;             (if window-system
-;;                 (color-theme-dark-blue2)
-;;               (color-theme-tty-dark))
-;; ;            (ido-ubiquitous-mode t)
-;; ))
-
 
 ;;; added by emacs when I used the customize menu to change some stuff ;;;
 (custom-set-variables
