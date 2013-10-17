@@ -569,6 +569,7 @@ whether you are defining one at the moment or not"
   '(
     ;; REVISIT: broken, can't find autoconf on mac?: auctex
     ;; REVISIT: no el-get for tbemail, submit patch to el-get?
+    ahg
     color-theme
     graphviz-dot-mode
     guess-offset
