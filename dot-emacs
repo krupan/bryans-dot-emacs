@@ -305,7 +305,8 @@
 ;; this is the best bit of emacs advice I've ever seen.  Invoke M-x
 ;; without the Alt key!!!!  I got this from
 ;; http://www.cabochon.com/~stevey/blog-rants/effective-emacs.html
-(global-set-key "\C-x\C-m" 'execute-extended-command)
+(global-set-key "\C-x\C-m" 'smex)
+(global-set-key (kbd "M-x") 'smex)
 (global-set-key "\C-cg" 'goto-line)
 (global-set-key "\C-cv" 'view-file)
 (global-set-key "\C-ceb" 'ediff-buffers)
@@ -574,6 +575,7 @@ whether you are defining one at the moment or not"
     jinja
     ido-ubiquitous
     smart-tab
+    smex
     xcscope
     yaml-mode
     )
