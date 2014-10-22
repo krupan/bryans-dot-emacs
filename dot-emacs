@@ -74,7 +74,7 @@
 ;; http://www.cs.huji.ac.il/support/emacs/font.html
 (if (string-match "bryan-murdock" system-name)
      (set-default-font
-      "-apple-Menlo-medium-normal-normal-*-14-*-*-*-m-0-iso10646-1"))
+      "-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1"))
 
 ;;;;;;; ediff buffers sid-by-side, like it should ;;;;;;;;;;
 (setq ediff-split-window-function 'split-window-horizontally)
