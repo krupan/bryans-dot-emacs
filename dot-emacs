@@ -137,8 +137,8 @@
 ;; save every 20 characters typed (this is the minimum)
 (setq auto-save-interval 20)
 
-;; save after 1 second of idle time (default is 30)
-(setq auto-save-timeout 1)
+;; save after 5 seconds of idle time (default is 30)
+(setq auto-save-timeout 5)
 
 ;; I don't use WoMan much, but when I do, I don't want it to pop up a
 ;; new window (known as a frame in emacs land):
