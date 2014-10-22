@@ -631,6 +631,7 @@ erc-modified-channels-alist. Should be executed on window change."
     ;; REVISIT: no el-get for tbemail, submit patch to el-get?
     ahg
     color-theme
+    exec-path-from-shell
     graphviz-dot-mode
     guess-offset
     jinja
@@ -642,15 +643,22 @@ erc-modified-channels-alist. Should be executed on window change."
     )
   "List of packages that I like.")
 
-;; Not that as long as an el-get recipe in this list does not define a
-;; :type property then it will get merged with the original recipe of
-;; the same name.
+;; Note that as long as an el-get recipe in this list does not define
+;; a :type property then it will get merged with the original recipe
+;; of the same name.
 (setq el-get-sources '((:name color-theme
                               :after (if window-system
                                          (color-theme-dark-blue2)
                                        (color-theme-tty-dark)))
                        (:name ido-ubiquitous
-                              :after (ido-ubiquitous-mode t))))
+                              :after (ido-ubiquitous-mode t))
+                       (:name exec-path-from-shell
+                              :load "exec-path-from-shell.el"
+                              ;; recommends only doing this for mac,
+                              ;; but it seems like it'd be nice for
+                              ;; everywhere.  See:
+                              ;; https://github.com/purcell/exec-path-from-shell
+                              :after (exec-path-from-shell-initialize))))
 
 ;; workaround: https://github.com/dimitri/el-get/issues/1407
 (package-initialize)
