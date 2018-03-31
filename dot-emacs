@@ -12,6 +12,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Highlight matching parenthesis
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (show-paren-mode t)
 
 ;; hitting delete will delete the highlighted region
@@ -809,6 +816,7 @@ erc-modified-channels-alist. Should be executed on window change."
   '(
     ;; REVISIT: broken, can't find autoconf on mac?: auctex
     ;; REVISIT: no el-get for tbemail, submit patch to el-get?
+    ag
     color-theme
     exec-path-from-shell
     graphviz-dot-mode
@@ -819,9 +827,10 @@ erc-modified-channels-alist. Should be executed on window change."
     markdown-mode
     rusti
     session
-    smartrep
     smart-tab
+    smartrep
     smex
+;;    wgrep-ag
     yaml-mode
     )
   "List of packages that I like.")
@@ -829,24 +838,51 @@ erc-modified-channels-alist. Should be executed on window change."
 ;; Note that as long as an el-get recipe in this list does not define
 ;; a :type property then it will get merged with the original recipe
 ;; of the same name.
-(setq el-get-sources '((:name color-theme
-                              :after (if window-system
-                                         (color-theme-dark-blue2)))
-                       (:name ido-ubiquitous
-                              :after (ido-ubiquitous-mode t))
-                       (:name key-chord
-                              :after (key-chord-mode 1))
-                       (:name session
-                              :after (add-hook 'after-init-hook 'session-initialize))
-                       (:name smart-tab
-                              :after (global-smart-tab-mode 1))
-                       (:name exec-path-from-shell
-                              :load "exec-path-from-shell.el"
-                              ;; recommends only doing this for mac,
-                              ;; but it seems like it'd be nice for
-                              ;; everywhere.  See:
-                              ;; https://github.com/purcell/exec-path-from-shell
-                              :after (exec-path-from-shell-initialize))))
+(setq el-get-sources
+      '((:name ag
+               :after (progn
+                        (setq ag-arguments (list "--word-regexp" "--smart-case"))
+                        ;; use ag instead of xref-find-references:
+                        (define-key global-map [remap xref-find-references] 'ag-project)))
+        (:name color-theme
+               :after (if window-system
+                          (color-theme-dark-blue2)))
+        (:name ido-ubiquitous
+               :after (ido-ubiquitous-mode t))
+        (:name key-chord
+               :after (progn
+                        (key-chord-mode 1)
+                        ;; try some key-chords:
+                        (key-chord-define-global "jj" 'forward-word)
+                        (key-chord-define-global "jw" 'forward-word)
+                        (key-chord-define-global "JJ" 'backward-word)
+                        (key-chord-define-global "JW" 'backward-word)
+                        (key-chord-define-global "jf" 'forward-char)
+                        (key-chord-define-global "jb" 'backward-char)))
+        (:name session
+               :after (add-hook 'after-init-hook 'session-initialize))
+        (:name smart-tab
+               :after (global-smart-tab-mode 1))
+        (:name smartrep
+               :after (progn
+                        (require 'smartrep)
+                        ;; smartrep is awesome.  "Changing Window size
+                        ;; tends to execute the same command
+                        ;; continuously. It is boring work. So eval
+                        ;; this example and type C-x { { {."
+                        (smartrep-define-key
+                            global-map "C-x"
+                          '(("{" . shrink-window-horizontally)
+                            ("}" . enlarge-window-horizontally)))
+                        (smartrep-define-key
+                            global-map "C-x"
+                          '(("o" . other-window)))))
+        (:name exec-path-from-shell
+               :load "exec-path-from-shell.el"
+               ;; recommends only doing this for mac, but it seems
+               ;; like it'd be nice for everywhere.  See:
+               ;; https://github.com/purcell/exec-path-from-shell
+               :after (exec-path-from-shell-initialize))))
 
 ;; this whole thing is so el-get can install packages from melpa:
 ;; https://melpa.org/#/getting-started
@@ -857,8 +893,6 @@ erc-modified-channels-alist. Should be executed on window change."
 (when (< emacs-major-version 24)
   ;; For important compatibility libraries like cl-lib
   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-;; workaround: https://github.com/dimitri/el-get/issues/1407
-(package-initialize)
 (require 'el-get-elpa)
 ;; Build the El-Get copy of the package.el packages if we have not
 ;; built it before.  Will have to look into updating later ...
@@ -866,27 +900,6 @@ erc-modified-channels-alist. Should be executed on window change."
   (el-get-elpa-build-local-recipes))
 (el-get-cleanup my-packages)
 (el-get 'sync my-packages)
-
-;; try some key-chords:
-(key-chord-define-global "jj" 'forward-word)
-(key-chord-define-global "jw" 'forward-word)
-(key-chord-define-global "JJ" 'backward-word)
-(key-chord-define-global "JW" 'backward-word)
-(key-chord-define-global "jf" 'forward-char)
-(key-chord-define-global "jb" 'backward-char)
-
-;; smartrep is awesome.  "Changing Window size tends to execute the
-;; same command continuously. It is boring work. So eval this example
-;; and type C-x { { {."
-(require 'smartrep)
-(smartrep-define-key
- global-map "C-x"
- '(("{" . shrink-window-horizontally)
-   ("}" . enlarge-window-horizontally)))
-
-(smartrep-define-key
- global-map "C-x"
- '(("o" . other-window)))
 
 ;;; added by emacs when I used the customize menu to change some stuff ;;;
 (custom-set-variables
@@ -898,8 +911,8 @@ erc-modified-channels-alist. Should be executed on window change."
    (quote
     ("d6a00ef5e53adf9b6fe417d2b4404895f26210c52bb8716971be106550cea257" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
  '(org-agenda-files nil)
- '(package-selected-packages (quote (dash async)))
  '(send-mail-function (quote smtpmail-send-it))
+ '(session-use-package t nil (session))
  '(smtpmail-smtp-server "smtp.gmail.com")
  '(smtpmail-smtp-service 587))
 (custom-set-faces
