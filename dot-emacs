@@ -1,17 +1,9 @@
 ; -*- emacs-lisp -*-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; This is Bryan Murdock's .emacs file.  It began as a simple copy
-;; from a fellow BYU student's .emacs file, and has morphed greatly
-;; since.
+;; This is Bryan Murdock's .emacs file.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; settings and default modes
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Highlight matching parenthesis
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
@@ -19,15 +11,27 @@
 ;; You may delete these explanatory comments.
 (package-initialize)
 
+;; make it a little easier to split this into multiple files and load
+;; those multiple files:
+(defun load-user-file (file)
+  (interactive "f")
+  "Load a file in current user's configuration directory"
+  (load-file (expand-file-name file user-emacs-directory)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; settings and default modes
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Highlight matching parenthesis
 (show-paren-mode t)
 
 ;; hitting delete will delete the highlighted region
 (pending-delete-mode 1)
 
-;;;; The MODE Line ;;;;
+;; column number in the mode line
 (column-number-mode 1)
 
-;;;;; no silly tool bar at the top ;;;
+;;;;; no silly tool bar at the top
 (tool-bar-mode -1)
 
 ;;; taking the plunge and getting rid of the menu too
@@ -48,14 +52,18 @@
 (add-hook 'ido-setup-hook
           (lambda ()
             (define-key ido-completion-map [tab] 'ido-complete)))
+(require 'icomplete)
+(icomplete-mode 1)
 
 ;; remembers which files were open when you quit and re-opens them:
-;; playing with session instead (see el-get below)
+;; playing with session instead (see external-packages.el)
 ;;(desktop-save-mode 1)
 
+;; With this, typing an abbreviations expands to something much more
+;; (like a skeleton):
 (setq-default abbrev-mode t)
 (setq abbrev-file-name             
-      "~/.emacs.d/abbrev_defs")
+      "~/.emacs.d/abbrev-defs.el")
 
 ;;;;; scroll one line at a time ;;;;
 (setq scroll-conservatively 5)
@@ -77,9 +85,11 @@
 ;; love it, sometimes I hate it...
 (setq mouse-yank-at-point t)
 
-;; Highlight current line, I might not like this on all the time.
+;; Highlight current line
 (if window-system
     (progn (global-hl-line-mode 1)
+           ;; hard coded color for my dark-blue2 theme, doesn't look
+           ;; so good with other themes :-(
            (set-face-background 'hl-line "RoyalBlue4")))
 
 ;; start server so emacsclient can be used.  Allows you to type
@@ -101,9 +111,7 @@
   (lambda ()
     (eshell-smart-initialize)))
 
-;;;;;;;;;;;;;;;;;; I need a bit bigger default font ;;;;;;;;;;;;;;;;;
-;;
-;; all about fonts in emacs:
+;; I need a bit bigger default font.  All about fonts in emacs:
 ;; http://www.cs.huji.ac.il/support/emacs/font.html
 (if (string-match "bryan-murdock" system-name)
      (set-default-font
@@ -136,7 +144,7 @@
   (set-default-font
    "-unknown-DejaVu Sans Mono-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"))
 
-;;;;;;; ediff buffers sid-by-side, like it should ;;;;;;;;;;
+;; ediff buffers sid-by-side, like it should:
 (setq ediff-split-window-function 'split-window-horizontally)
 
 ;; also, don't pop-up a seperate frame, just make a new window:
@@ -144,7 +152,7 @@
 
 ;; allows you to undow changes to your window configureations (like
 ;; after an ediff session) by doing c-c left-arrow (or right-arrow for
-;; a redo).  Very handy
+;; a redo).  Very handy:
 (winner-mode t)
 
 ;; some people get upset if you use tabs instead of spaces, but I've
@@ -153,12 +161,11 @@
 ;; stuff, not tabs)
 (setq-default indent-tabs-mode nil)
 
-;;;;;;;;;;;;;;;;; Use cperl-mode instead of perl-mode ;;;;;;;;;;;;;;
+;; Use cperl-mode instead of perl-mode (though I don't use perl much anymore)
 (add-to-list 'auto-mode-alist '("\\.\\([pP][Llm]\\|al\\)\\'" . cperl-mode))
 (add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
 (add-to-list 'interpreter-mode-alist '("perl5" . cperl-mode))
 (add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
-
 ;; don't underline trailing whitespace (such an odd feature)
 ;; hmmmm...this doesn't work
 (setq cperl-invalid-face nil)
@@ -179,24 +186,25 @@
 ;; "confusing"
 (put 'narrow-to-region 'disabled nil)
 
-;;;;;;;;;;;;;; store backup files in ~/.backups-emacs/ ;;;;;;;;;;
+;; store backup files in ~/.backups-emacs/
 (setq
- backup-by-copying t                    ; don't clobber symlinks
+ ;; don't clobber symlinks
+ backup-by-copying t                    
  backup-directory-alist
- '(("." . "~/.backups-emacs"))          ; don't litter my fs tree
+ ;; don't litter my fs tree
+ '(("." . "~/.backups-emacs"))
  delete-old-versions t
  kept-new-versionhs 6
  kept-old-versions 2
- version-control t)                     ; use versioned backups
+ ;; use versioned backups
+ version-control t)
 
 ;; This causes files that I'm editing to be saved automatically by the
 ;; emacs auto-save functionality.  I'm hoping to break myself of the
 ;; c-x c-s twitch.
 (add-hook 'auto-save-hook 'save-buffer-if-visiting-local-file)
-
 ;; save every 20 characters typed (this is the minimum)
 (setq auto-save-interval 20)
-
 ;; save after 5 seconds of idle time (default is 30)
 (setq auto-save-timeout 5)
 
@@ -208,13 +216,6 @@
 ;; file you are editing
 ;; (http://emacs.wordpress.com/2007/01/24/imenu-with-a-workaround/#comment-51)
 (global-set-key [mouse-3] `imenu)
-
-;; I think this is causing problems.  Try without it for a while and
-;; see.
-;;
-;; don't give me the big undo warning when I revert a huge buffer:
-;; (setq warning-suppress-types
-;;       (append '(undo discard-info)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Hooks and mode settings
@@ -243,7 +244,7 @@
 ;; https://groups.google.com/forum/#!msg/gnu.emacs.help/Ew0sTxk0C-g/vDRDdSagBAAJ
 (defvar etags--table-line-limit 500)
 
-(defun etags-tags-completion-table ()   ; Doc string?
+(defun etags-tags-completion-table ()
    (let (table
         (progress-reporter
          (make-progress-reporter
@@ -301,10 +302,8 @@ tags table and its (recursively) included tags tables."
               (setq tags-completion-table nil))))) 
 ;; end ctags fixes
 
-;; (autoload 'verilog-mode "/tools/verilog/verilog-mode"  "Verilog mode" t )
 ;; fix the tags keybinding that verilog-mode breaks
 (defun my-verilog-hook ()
-
   (setq verilog-indent-level             2
         verilog-indent-level-module      2
         verilog-indent-level-declaration 2
@@ -340,10 +339,6 @@ tags table and its (recursively) included tags tables."
     (occur "\\( function \\| task \\)" nil)))
 (add-hook 'verilog-mode-hook 'my-verilog-hook)
 
-;; (add-hook 'verilog-mode-hook
-;;           '(lambda ()
-;;              (modify-syntax-entry ?_ "." verilog-mode-syntax-table)))
-
 (add-to-list 'auto-mode-alist '("\\.svh?\\'" . verilog-mode))
 (add-to-list 'auto-mode-alist '("\\.vh?\\'" . verilog-mode))
 (add-to-list 'auto-mode-alist '("\\.f?\\'" . verilog-mode))
@@ -375,18 +370,16 @@ tags table and its (recursively) included tags tables."
 ;; wrap long lines in text modes:
 (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
 
-;; With this you can put dot source code in a #+begin_src...#+end_src
-;; block, hit c-c c-c and it will turn it into an image and display it
-;; inline.  It also gets exported to your pdf with the rest of your
-;; document.  Pretty dang awesome.  Found this here:
-;; http://doc.norang.ca/org-mode.html#Publishing
+;; With this you can put graphviz dot source code in a
+;; #+begin_src...#+end_src block, hit c-c c-c and it will turn it into
+;; an image and display it inline.  It also gets exported to your pdf
+;; with the rest of your document.  Pretty dang awesome.  Found this
+;; here: http://doc.norang.ca/org-mode.html#Publishing
 ;;
 ;; The above also mentions ditaa that turns ascii art into pretty
 ;; pictures too.
-
 (add-hook 'org-babel-after-execute-hook 'bh/display-inline-images 'append)
 (add-hook 'org-mode-hook 'bh/load-languages 'append)
-
 (setq org-ditaa-jar-path "~/src/ditaa/ditaa0_9.jar")
 
 ; Make babel results blocks lowercase
@@ -407,6 +400,7 @@ tags table and its (recursively) included tags tables."
            (sh . t)
            (org . t)
            (latex . t)))))
+;; end of graphviz dot magic
 
 ;; add support to org-mode for the IEEEtran latex class:
 (eval-after-load 'org-latex
@@ -463,11 +457,6 @@ tags table and its (recursively) included tags tables."
                            (interactive)
                            (enlarge-window-horizontally 10)))
 
-;; this is the best bit of emacs advice I've ever seen.  Invoke M-x
-;; without the Alt key!!!!  I got this from
-;; http://www.cabochon.com/~stevey/blog-rants/effective-emacs.html
-(global-set-key "\C-x\C-m" 'smex)
-(global-set-key (kbd "M-x") 'smex)
 (global-set-key "\C-cg" 'goto-line)
 (global-set-key "\C-cv" 'view-file)
 (global-set-key "\C-ceb" 'ediff-buffers)
@@ -525,6 +514,22 @@ file (not scratch buffer, not tramp file)"
 ;; Got these from Yegge:
 ;; http://steve.yegge.googlepages.com/my-dot-emacs-file
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun swap-windows ()
+  "If you have 2 windows, it swaps them."
+  (interactive)
+  (cond ((not (= (count-windows) 2))
+         (message "You need exactly 2 windows to do this."))
+        (t
+         (let* ((w1 (car (window-list)))
+                (w2 (car (cdr (window-list))))
+                (b1 (window-buffer w1))
+                (b2 (window-buffer w2))
+                (s1 (window-start w1))
+                (s2 (window-start w2)))
+           (set-window-buffer w1 b2)
+           (set-window-buffer w2 b1)
+           (set-window-start w1 s2)
+           (set-window-start w2 s1)))))
 ;;
 ;; Never understood why Emacs doesn't have this function.
 ;;
@@ -553,6 +558,7 @@ file (not scratch buffer, not tramp file)"
  (if (not filename)
 	(message "Buffer '%s' is not visiting a file!" name)
  (progn 	(copy-file filename newname 1) 	(delete-file filename) 	(set-visited-file-name newname) 	(set-buffer-modified-p nil) 	t)))) 
+;; end yegge
 
 (defun insert-file-name()
   "Inserts the file name at the current point"
@@ -665,53 +671,6 @@ whether you are defining one at the moment or not"
 
 (global-set-key "\M-i" 'ido-goto-symbol) ; or any key you see fit
 
-;; to bind skeletons to an abbrev do M-x list-abbrevs, edit the
-;; abbrev-table you want it to be a part of, then hit C-c C-c, try it
-;; out, then hit C-x C-s to save it to the abbrevs file
-
-(define-skeleton skel-verilog-insert-uvm-info
-  "Insert a uvm_info template"
-  nil
-  "`uvm_info(\"DEBUG\", \"" _ "\", UVM_MEDIUM)"
-)
-
-(define-skeleton skel-verilog-insert-uvm-info-with-psprintf
-  "Insert a uvm_info template with psprintf"
-  nil
-  "`uvm_info(get_full_name(), $psprintf(\"" _ "\", ), UVM_MEDIUM)"
-)
-
-(define-skeleton skel-c-dbg-print
-  "Insert DBG_PRINT macro call"
-  nil
-  "DBG_PRINT(\"" _ "\\n\");"
-)
-
-(define-skeleton skel-c-dbg-hexdump
-  "Insert DBG_HEXDUMP macro call"
-  nil
-  "DBG_HEXDUMP(\"" _ "\", , );"
-)
-
-(define-skeleton skel-c-printf
-  "Insert printf"
-  nil
-  "printf(\"" _ "\\n\");"
-)
-
-(define-skeleton skel-org-notes-header
-  "insert the basic org-mode header that I like for notes"
-  nil
-  "#+STARTUP: hidestars"
-  \n >
-  "#+STARTUP: indent"
-  \n >
-  "# without this, html export turn _word to into a subscript."
-  \n >
-  "#+OPTIONS: ^:{}"
-  \n >
-)
-
 ;; display which function your cursor is in down in the mode line
 (which-function-mode 1)
 
@@ -776,148 +735,23 @@ erc-modified-channels-alist. Should be executed on window change."
 
 (require 'tramp)
 (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
-;; REVISIT: better to just do this in my ssh_config?
+;; REVISIT: better to just do this in my ssh_config?  I just wanted to
+;; add the -A:
 (add-to-list 'tramp-connection-properties
              (list (regexp-quote "/ssh:nova4:")
                    "login-args"
                    '(("-A") ("-l" "%u") ("-p" "%p") ("%c")
                      ("-e" "none") ("%h"))))
 
+(setq custom-file "~/.emacs.d/customize-junk.el")
+(load custom-file)
+
+(load-user-file "skeletons.el")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Hopefully everything above this works for the basic emacs
-;; distribution.  Every below this is for stuff I've downloaded.
-;;
-;; I'm now attempting to use el-get to install all packages not
-;; included with emacs, following the advice here:
-;;
-;; http://danielsz.github.io/towards-a-declarative-dependency-management-s/index.html/
-;;
-;; so far, I really like it.
+;; distribution.  Below is for downloaded stuff:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; el-get stuff:
-(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
-(setq el-get-user-package-directory "~/.emacs.d/packages.d/")
-(unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-
-    (let (el-get-master-branch)
-      (goto-char (point-max))
-      (eval-print-last-sexp))))
-
-;; keep this sorted alphabetically (use sort-lines) (NOTE: color-theme
-;; is just for color-theme-dark-blue2, it would be cool if I could
-;; port just that theme over to the new theme system).
-(defvar my-packages
-  '(
-    ;; REVISIT: broken, can't find autoconf on mac?: auctex
-    ;; REVISIT: no el-get for tbemail, submit patch to el-get?
-    ag
-    color-theme
-    exec-path-from-shell
-    graphviz-dot-mode
-    guess-offset
-    ido-ubiquitous
-    key-chord
-    magit
-    markdown-mode
-    rusti
-    session
-    smart-tab
-    smartrep
-    smex
-;;    wgrep-ag
-    yaml-mode
-    )
-  "List of packages that I like.")
-
-;; Note that as long as an el-get recipe in this list does not define
-;; a :type property then it will get merged with the original recipe
-;; of the same name.
-(setq el-get-sources
-      '((:name ag
-               :after (progn
-                        (setq ag-arguments (list "--word-regexp" "--smart-case"))
-                        ;; use ag instead of xref-find-references:
-                        (define-key global-map [remap xref-find-references] 'ag-project)))
-        (:name color-theme
-               :after (if window-system
-                          (color-theme-dark-blue2)))
-        (:name ido-ubiquitous
-               :after (ido-ubiquitous-mode t))
-        (:name key-chord
-               :after (progn
-                        (key-chord-mode 1)
-                        ;; try some key-chords:
-                        (key-chord-define-global "jj" 'forward-word)
-                        (key-chord-define-global "jw" 'forward-word)
-                        (key-chord-define-global "JJ" 'backward-word)
-                        (key-chord-define-global "JW" 'backward-word)
-                        (key-chord-define-global "jf" 'forward-char)
-                        (key-chord-define-global "jb" 'backward-char)))
-        (:name session
-               :after (add-hook 'after-init-hook 'session-initialize))
-        (:name smart-tab
-               :after (global-smart-tab-mode 1))
-        (:name smartrep
-               :after (progn
-                        (require 'smartrep)
-                        ;; smartrep is awesome.  "Changing Window size
-                        ;; tends to execute the same command
-                        ;; continuously. It is boring work. So eval
-                        ;; this example and type C-x { { {."
-                        (smartrep-define-key
-                            global-map "C-x"
-                          '(("{" . shrink-window-horizontally)
-                            ("}" . enlarge-window-horizontally)))
-                        (smartrep-define-key
-                            global-map "C-x"
-                          '(("o" . other-window)))))
-        (:name exec-path-from-shell
-               :load "exec-path-from-shell.el"
-               ;; recommends only doing this for mac, but it seems
-               ;; like it'd be nice for everywhere.  See:
-               ;; https://github.com/purcell/exec-path-from-shell
-               :after (exec-path-from-shell-initialize))))
-
-;; this whole thing is so el-get can install packages from melpa:
-;; https://melpa.org/#/getting-started
-(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                    (not (gnutls-available-p))))
-       (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
-  (add-to-list 'package-archives (cons "melpa" url) t))
-(when (< emacs-major-version 24)
-  ;; For important compatibility libraries like cl-lib
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-(require 'el-get-elpa)
-;; Build the El-Get copy of the package.el packages if we have not
-;; built it before.  Will have to look into updating later ...
-(unless (file-directory-p el-get-recipe-path-elpa)
-  (el-get-elpa-build-local-recipes))
-(el-get-cleanup my-packages)
-(el-get 'sync my-packages)
-
-;;; added by emacs when I used the customize menu to change some stuff ;;;
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("d6a00ef5e53adf9b6fe417d2b4404895f26210c52bb8716971be106550cea257" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
- '(org-agenda-files nil)
- '(send-mail-function (quote smtpmail-send-it))
- '(session-use-package t nil (session))
- '(smtpmail-smtp-server "smtp.gmail.com")
- '(smtpmail-smtp-service 587))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(which-func ((t (:foreground "Yellow")))))
+(load-user-file "external-packages.el")
