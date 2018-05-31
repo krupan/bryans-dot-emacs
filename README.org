@@ -1,0 +1,16 @@
+* README
+
+This used to be just my =.emacs= file.  Things have changed over the years and now it's a collection of files that live in the =~/.emacs.d/= directory.
+
+* Using it
+
+Clone this, then:
+
+#+BEGIN_EXAMPLE
+  cd dot-emacs
+  ./install.sh
+#+END_EXAMPLE
+
+That will create symbolic links to these files inside of =~/.emacs.d= (the link to dot-emacs will be init.el).
+
+The first time you run emacs it will complain about use-package.  You will have to manually install that using M-x package-install.  Then you can quit emacs, reopen it and it will automatically download all the other packages in external-packages.el.
