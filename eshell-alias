@@ -1,0 +1,7 @@
+alias gow cd /ssh:nova4:/home/bmurdock/
+alias v view-file $1
+alias less view-file $1
+alias e find-file $1
+alias d dired $1
+alias go-lab cd /ssh:user@192.168.168.27:~
+alias ll ls -l $*

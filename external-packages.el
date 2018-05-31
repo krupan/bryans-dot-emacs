@@ -38,7 +38,7 @@
 ; - [X]  ag
 ; - [X]  dumb-jump
 ; - [X]  color-theme had to upgrade to color-theme-modern, which seems fine
-; - [ ]  exec-path-from-shell (I think I only needed this on my mac?)
+; - [X]  exec-path-from-shell (I think I only needed this on my mac?)
 ; - [X]  graphviz-dot-mode
 ; - [X]  guess-offset (replace with dtrt-indent)
 ; - [X]  ido-ubiquitous (replace with ido-completing-read+)
@@ -74,13 +74,20 @@
     'dumb-jump-back))
 
 (use-package color-theme-modern
+  :ensure t)
+
+(use-package tango-2-theme
   :ensure t
-  :config (load-theme 'dark-blue2 t))
+  :config (load-theme 'tango-2 t))
 
 ;; more ido-like completion:
 (use-package crm-custom
   :ensure t
   :config (crm-custom-mode 1))
+
+(use-package exec-path-from-shell
+  :ensure t
+  :config (exec-path-from-shell-initialize))
 
 (use-package graphviz-dot-mode
   :ensure t)
@@ -100,7 +107,10 @@
 ;; files with the keyboard the same way it lets you with the menu
 (use-package session
   :ensure t
-  :hook (after-init . session-initialize))
+  :hook (after-init . session-initialize)
+  ;; this is so it will save periodically, not just on exit, so that
+  ;; sessions will get saved before a crash:
+  :config (run-with-idle-timer 30 t 'session-save-session))
 
 (use-package smart-tab
   :ensure t

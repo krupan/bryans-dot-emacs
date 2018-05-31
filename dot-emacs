@@ -86,11 +86,11 @@
 (setq mouse-yank-at-point t)
 
 ;; Highlight current line
-(if window-system
-    (progn (global-hl-line-mode 1)
-           ;; hard coded color for my dark-blue2 theme, doesn't look
-           ;; so good with other themes :-(
-           (set-face-background 'hl-line "RoyalBlue4")))
+;; (if window-system
+;;     (progn (global-hl-line-mode 1)
+;;            ;; hard coded color for my dark-blue2 theme, doesn't look
+;;            ;; so good with other themes :-(
+;;            (set-face-background 'hl-line "RoyalBlue4")))
 
 ;; start server so emacsclient can be used.  Allows you to type
 ;; emacsclient filename on the command line and the file is opened in
@@ -110,6 +110,20 @@
 (add-hook 'eshell-mode-hook
   (lambda ()
     (eshell-smart-initialize)))
+;; make the eshell prompt close to my bash prompt, and update the
+;; required prompt regexp:
+(setq eshell-prompt-function
+      (lambda ()
+        (concat "["
+                (propertize (concat "@" (system-name))
+                            'face `(:foreground "LightGoldenrod"))
+                " in "
+                (propertize (eshell/pwd) 'face `(:foreground "SkyBlue"))
+                "]\n"
+                (if (= (user-uid) 0) "# " "$ "))))
+(setq eshell-highlight-prompt nil)
+;; only has to recognize the last line of my multi-line prompt:
+(setq eshell-prompt-regexp (concat "^" (regexp-quote "$ ")))
 
 ;; I need a bit bigger default font.  All about fonts in emacs:
 ;; http://www.cs.huji.ac.il/support/emacs/font.html
@@ -160,6 +174,13 @@
 ;; so I decided to just use this (in short, uses spaces to indent
 ;; stuff, not tabs)
 (setq-default indent-tabs-mode nil)
+
+;; I'm playing with using more frames instead of windows, so that I
+;; can use my (i3) window manager shortcuts to move around.  I kept
+;; confusing myself using one set of hot keys to switch emacs windows
+;; and another to switch X windows.  This makes emacs split frames
+;; into windows less:
+(setq same-window-regexps '("."))
 
 ;; Use cperl-mode instead of perl-mode (though I don't use perl much anymore)
 (add-to-list 'auto-mode-alist '("\\.\\([pP][Llm]\\|al\\)\\'" . cperl-mode))
@@ -354,6 +375,9 @@ tags table and its (recursively) included tags tables."
     (setq org-agenda-files (list "~/work/documents/")))
 (if (string-match "bmurdock-laptop" system-name)
     (setq org-agenda-files (list "/ssh:nova4:/home/bmurdock/work/documents/")))
+(if (or (string-match "malo" system-name)
+        (string-match "brzo" system-name))
+    (setq org-agenda-files (list "~/Sync/clerk.org")))
 
 ;; view next 30 days by default, not just a week
 (setq org-agenda-span 30)
@@ -733,12 +757,18 @@ erc-modified-channels-alist. Should be executed on window change."
      (add-hook 'erc-send-completed-hook (lambda (str)
 					  (erc-bar-update-overlay)))))
 
+;; use tramp, a few tweaks for it:
 (require 'tramp)
 (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 ;; REVISIT: better to just do this in my ssh_config?  I just wanted to
 ;; add the -A:
 (add-to-list 'tramp-connection-properties
-             (list (regexp-quote "/ssh:nova4:")
+             (list (regexp-quote "/ssh:nova")
+                   "login-args"
+                   '(("-A") ("-l" "%u") ("-p" "%p") ("%c")
+                     ("-e" "none") ("%h"))))
+(add-to-list 'tramp-connection-properties
+             (list (regexp-quote "/ssh:nebula")
                    "login-args"
                    '(("-A") ("-l" "%u") ("-p" "%p") ("%c")
                      ("-e" "none") ("%h"))))
