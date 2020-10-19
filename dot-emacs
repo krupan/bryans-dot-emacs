@@ -474,13 +474,12 @@ tags table and its (recursively) included tags tables."
 ;; opinion)
 (require 'org-tempo)
 (setq org-src-window-setup 'current-window)
+
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline "~/Documents/notes.org" "Tasks")
          "* TODO %?\n%i%a" :prepend t)
         ("n" "Notes" entry (file+olp "~/Documents/notes.org" "Notes")
          "* Note taken on %U\n%i%?link to origin: %a" :prepend t)))
-
-
 
 ;; wrap long lines in text modes:
 (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
