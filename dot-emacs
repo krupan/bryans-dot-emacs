@@ -75,6 +75,11 @@
 ;; don't blink the cursor
 (blink-cursor-mode -1)
 
+(if (eq system-type 'darwin)
+    (setq ispell-program-name "/usr/local/bin/aspell")
+)
+(require 'ox-md)
+
 ;;;; use y or n instead of yes or no
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -83,11 +88,11 @@
 (setq mouse-yank-at-point t)
 
 ;; Highlight current line
-(if window-system
+;(if (display-graphic-p)
     (progn (global-hl-line-mode 1)
            ;; hard coded color for my tango-2 theme, may not look so
            ;; good with other themes :-(
-           (set-face-background 'hl-line "gray15")))
+           (set-face-background 'hl-line "gray15"));)
 
 ;; use view mode for all read-only files
 (setq view-read-only t)
@@ -448,7 +453,7 @@ tags table and its (recursively) included tags tables."
 (setq org-log-done t)
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cb" 'org-iswitchb)
+(global-set-key "\C-cc" 'org-capture)
 (setq org-return-follows-link t)
 ;; org-agenda
 (if (or (string-match "brzo" system-name))
@@ -465,16 +470,26 @@ tags table and its (recursively) included tags tables."
 ;; will fix it:
 (setq org-icalendar-use-UTC-date-time t)
 (setq org-icalendar-timezone "America/Denver")
-;; bring back shortcuts like <s-TAB, <e-TAB.  Pretty mean to remove
-;; those, org-mode :-(
+;; fix some org-mode regressions (at least they are regressiosn in my
+;; opinion)
 (require 'org-tempo)
-;; fix what happens to your windows when you edit a source block (used
-;; to Just Work)
 (setq org-src-window-setup 'current-window)
+(setq org-capture-templates
+      '(("t" "Todo" entry (file+headline "~/Documents/notes.org" "Tasks")
+         "* TODO %?\n%i%a" :prepend t)
+        ("n" "Notes" entry (file+olp "~/Documents/notes.org" "Notes")
+         "* Note taken on %U\n%i%?link to origin: %a" :prepend t)))
+
 
 
 ;; wrap long lines in text modes:
 (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+
+;; flyspell stuff, the last one is supposed to improve performance
+(add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+(setq flyspell-issue-message-flag nil)
+
 
 ;; TODO: this graphviz stuff breaks org-mode in emacs 26.1,
 ;; org-version 9.1.9.  Not using it at the moment, so I'm just
