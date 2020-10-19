@@ -69,3 +69,15 @@
   "#+EXPORT_EXCLUDE_TAGS: noexport"
   \n >
 )
+
+(define-skeleton skel-django-template-tag
+  "Insert the beginning and ending of a template tag"
+  nil
+  "{% " _ " %}"
+)
+
+(define-skeleton skel-django-template-var
+  "Insert the beginning and ending of a template variable expansion"
+  nil
+  "{{ " _ " }}"
+)

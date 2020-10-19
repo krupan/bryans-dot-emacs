@@ -5,12 +5,6 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-(package-initialize)
-
 ;; make it a little easier to split this into multiple files and load
 ;; those multiple files:
 (defun load-user-file (file)
@@ -21,6 +15,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; settings and default modes
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; I hate when I accidently kill emacs
+(setq confirm-kill-emacs #'y-or-n-p)
 
 ;; Highlight matching parenthesis
 (show-paren-mode t)
@@ -52,12 +49,12 @@
 (add-hook 'ido-setup-hook
           (lambda ()
             (define-key ido-completion-map [tab] 'ido-complete)))
-(require 'icomplete)
-(icomplete-mode 1)
 
-;; remembers which files were open when you quit and re-opens them:
-;; playing with session instead (see external-packages.el)
-;;(desktop-save-mode 1)
+;; try this instead of desktop or session:
+(recentf-mode 1)
+;; save periodically
+(run-with-idle-timer 60 t 'recentf-save-list)
+(global-set-key "\C-cr" 'recentf-open-files)
 
 ;; With this, typing an abbreviations expands to something much more
 ;; (like a skeleton):
@@ -86,17 +83,17 @@
 (setq mouse-yank-at-point t)
 
 ;; Highlight current line
-;; (if window-system
-;;     (progn (global-hl-line-mode 1)
-;;            ;; hard coded color for my dark-blue2 theme, doesn't look
-;;            ;; so good with other themes :-(
-;;            (set-face-background 'hl-line "RoyalBlue4")))
+(if window-system
+    (progn (global-hl-line-mode 1)
+           ;; hard coded color for my tango-2 theme, may not look so
+           ;; good with other themes :-(
+           (set-face-background 'hl-line "gray15")))
 
-;; start server so emacsclient can be used.  Allows you to type
-;; emacsclient filename on the command line and the file is opened in
-;; the currently running emacs.  Actually I always do emacsclient -n
-;; filename (actually a script called e)
-(ignore-errors (server-start))
+;; use view mode for all read-only files
+(setq view-read-only t)
+
+;; hide show:
+;;(hs-minor-mode t)
 
 ;; playing with eshell, this makes it pretty nifty:
 ;; (https://www.masteringemacs.org/article/complete-guide-mastering-eshell
@@ -125,38 +122,122 @@
 ;; only has to recognize the last line of my multi-line prompt:
 (setq eshell-prompt-regexp (concat "^" (regexp-quote "$ ")))
 
-;; I need a bit bigger default font.  All about fonts in emacs:
-;; http://www.cs.huji.ac.il/support/emacs/font.html
-(if (string-match "bryan-murdock" system-name)
-     (set-default-font
-      "-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1"))
+;; Fonts.  Kind of a pain.
 
-(if (string-match "malo" system-name)
-    (set-default-font
-     "-unknown-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-iso10646-1"))
+;; This gives me variable width font for text, fixed width for code
+;; examples and stuff.  Got this here:
+;; https://emacs.stackexchange.com/questions/32300/monospace-font-for-calendar-buffer-and-tables-in-org-mode-proportional-font-i/32310
+'(variable-pitch ((t (:height 200 :family "DejaVu Sans"))))
+(defun set-buffer-variable-pitch ()
+  (interactive)
+  (variable-pitch-mode t)
+  (setq line-spacing 3)
+  (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-block nil :inherit 'fixed-pitch)
+  ;; (set-face-attribute 'org-block-background nil :inherit 'fixed-pitch)
+  )
+(add-hook 'org-mode-hook 'set-buffer-variable-pitch)
+(add-hook 'eww-mode-hook 'set-buffer-variable-pitch)
+(add-hook 'markdown-mode-hook 'set-buffer-variable-pitch)
+(add-hook 'Info-mode-hook 'set-buffer-variable-pitch)
 
-(if (string-match "bmurdock" system-name)
-    (set-default-font
-     "-unknown-DejaVu Sans Mono-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1"))
+;; set default fonts for various computers I use:
+(if (string-match "bryan-murdock" (system-name))
+     (set-frame-font
+      "-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1" nil t))
 
-(if (string-match "bmurdock-vm" system-name)
-    (set-default-font
-     "-unknown-DejaVu Sans Mono-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1"))
+(if (string-match "malo" (system-name))
+    (set-frame-font
+     "-unknown-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-iso10646-1" nil t))
+
+(if (string-match "bmurdock-laptop" (system-name))
+    (set-frame-font
+   "-PfEd-DejaVu Sans Mono-normal-normal-normal-*-22-*-*-*-m-0-iso10646-1"))
+
+(if (string-match "bmurdock-vm" (system-name))
+    (set-frame-font
+     "-unknown-DejaVu Sans Mono Book-normal-normal-normal-*-20-*-*-*-m-0-iso10646-1"))
+
+(if (string-match "msd" (system-name))
+  (set-frame-font
+   "-PfEd-DejaVu Sans Mono-normal-normal-normal-*-30-*-*-*-m-0-iso10646-1"))
 
 (defun big-font()
   (interactive)
-  (set-default-font
-   "-unknown-DejaVu Sans Mono-normal-normal-normal-*-18-*-*-*-m-0-iso10646-1"))
+  (set-frame-font
+   "-PfEd-DejaVu Sans Mono-normal-normal-normal-*-30-*-*-*-m-0-iso10646-1"))
 
 (defun small-font()
   (interactive)
-  (set-default-font
-   "-unknown-DejaVu Sans Mono-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1"))
+  (set-frame-font
+   ;; was 22, but my eyes are pretty good after LASIK, so trying this:
+   "-PfEd-DejaVu Sans Mono-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1"))
 
 (defun really-small-font()
   (interactive)
-  (set-default-font
-   "-unknown-DejaVu Sans Mono-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"))
+  (set-frame-font
+   "-PfEd-DejaVu Sans Mono-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"))
+
+(defun big-font-meslo()
+  (interactive)
+  (set-frame-font
+   "-PfEd-Meslo LG S DZ-normal-normal-normal-*-18-*-*-*-m-0-iso10646-1"))
+
+(defun small-font-meslo()
+  (interactive)
+  (set-frame-font
+   "-PfEd-Meslo LG S DZ-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1"))
+
+(defun really-small-font-meslo()
+  (interactive)
+  (set-frame-font
+   "-PfEd-Meslo LG S DZ-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"))
+
+(defun big-font-inconsolata()
+  (interactive)
+  (set-frame-font
+   "-CYRE-Inconsolata-normal-normal-normal-*-18-*-*-*-m-0-iso10646-1"))
+
+(defun small-font-inconsolata()
+  (interactive)
+  (set-frame-font
+   "-CYRE-Inconsolata-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1"))
+
+(defun really-small-font-inconsolata()
+  (interactive)
+  (set-frame-font
+   "-CYRE-Inconsolata-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1"))
+
+(defun big-font-anon()
+  (interactive)
+  (set-frame-font
+   "-mlss-Anonymous Pro-normal-normal-normal-*-18-*-*-*-m-0-iso10646-1"))
+
+(defun small-font-anon()
+  (interactive)
+  (set-frame-font
+   "-mlss-Anonymous Pro-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1"))
+
+(defun really-small-font-anon()
+  (interactive)
+  (set-frame-font
+   "-mlss-Anonymous Pro-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1"))
+
+(defun big-font-non-mono()
+  (interactive)
+  (set-frame-font
+   "-PfEd-DejaVu Sans-normal-normal-normal-*-18-*-*-*-*-0-iso10646-1"))
+
+(defun small-font-non-mono()
+  (interactive)
+  (set-frame-font
+   "-PfEd-DejaVu Sans-normal-normal-normal-*-16-*-*-*-*-0-iso10646-1"))
+
+(defun really-small-font-non-mono()
+  (interactive)
+  (set-frame-font
+   "-PfEd-DejaVu Sans-normal-normal-normal-*-14-*-*-*-*-0-iso10646-1"))
 
 ;; ediff buffers sid-by-side, like it should:
 (setq ediff-split-window-function 'split-window-horizontally)
@@ -198,6 +279,9 @@
 
 ;; conf mode for hgrc files
 (add-to-list 'auto-mode-alist '("\\hgrc?\\'" . conf-mode))
+;; conf mode for systemd files
+(add-to-list 'auto-mode-alist '("\\.service?\\'" . conf-mode))
+(add-to-list 'auto-mode-alist '("\\.timer?\\'" . conf-mode))
 
 ;; set the compilation buffer to always scroll to follow output as it
 ;; comes in.
@@ -245,11 +329,7 @@
                                  (setq c-basic-offset 4)
                                  ;; everyone at work seems to format
                                  ;; their code this way:
-                                 (c-set-style "stroustrup")
-                                 ;;With tab doing completion, M-tab is
-                                 ;;free for indent-region
-                                 (local-set-key [?\C-c tab] 'indent-region)
-                                 ))
+                                 (c-set-style "stroustrup")))
 
 ;; I think this is messing up python-mode:
 ;; (setq electric-indent-mode t)
@@ -371,12 +451,7 @@ tags table and its (recursively) included tags tables."
 (global-set-key "\C-cb" 'org-iswitchb)
 (setq org-return-follows-link t)
 ;; org-agenda
-(if (string-match "nova2" system-name)
-    (setq org-agenda-files (list "~/work/documents/")))
-(if (string-match "bmurdock-laptop" system-name)
-    (setq org-agenda-files (list "/ssh:nova4:/home/bmurdock/work/documents/")))
-(if (or (string-match "malo" system-name)
-        (string-match "brzo" system-name))
+(if (or (string-match "brzo" system-name))
     (setq org-agenda-files (list "~/Sync/clerk.org")))
 
 ;; view next 30 days by default, not just a week
@@ -390,41 +465,52 @@ tags table and its (recursively) included tags tables."
 ;; will fix it:
 (setq org-icalendar-use-UTC-date-time t)
 (setq org-icalendar-timezone "America/Denver")
+;; bring back shortcuts like <s-TAB, <e-TAB.  Pretty mean to remove
+;; those, org-mode :-(
+(require 'org-tempo)
+;; fix what happens to your windows when you edit a source block (used
+;; to Just Work)
+(setq org-src-window-setup 'current-window)
+
 
 ;; wrap long lines in text modes:
 (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
 
-;; With this you can put graphviz dot source code in a
-;; #+begin_src...#+end_src block, hit c-c c-c and it will turn it into
-;; an image and display it inline.  It also gets exported to your pdf
-;; with the rest of your document.  Pretty dang awesome.  Found this
-;; here: http://doc.norang.ca/org-mode.html#Publishing
+;; TODO: this graphviz stuff breaks org-mode in emacs 26.1,
+;; org-version 9.1.9.  Not using it at the moment, so I'm just
+;; commenting it out for now:
 ;;
-;; The above also mentions ditaa that turns ascii art into pretty
-;; pictures too.
-(add-hook 'org-babel-after-execute-hook 'bh/display-inline-images 'append)
-(add-hook 'org-mode-hook 'bh/load-languages 'append)
-(setq org-ditaa-jar-path "~/src/ditaa/ditaa0_9.jar")
+;; ;; With this you can put graphviz dot source code in a
+;; ;; #+begin_src...#+end_src block, hit c-c c-c and it will turn it into
+;; ;; an image and display it inline.  It also gets exported to your pdf
+;; ;; with the rest of your document.  Pretty dang awesome.  Found this
+;; ;; here: http://doc.norang.ca/org-mode.html#Publishing
+;; ;;
+;; ;; The above also mentions ditaa that turns ascii art into pretty
+;; ;; pictures too.
+;; (add-hook 'org-babel-after-execute-hook 'bh/display-inline-images 'append)
+;; (add-hook 'org-mode-hook 'bh/load-languages 'append)
+;; (setq org-ditaa-jar-path "~/src/ditaa/ditaa0_9.jar")
 
-; Make babel results blocks lowercase
-(setq org-babel-results-keyword "results")
+;; ; Make babel results blocks lowercase
+;; (setq org-babel-results-keyword "results")
 
-(defun bh/display-inline-images ()
-  (condition-case nil
-      (org-display-inline-images)
-    (error nil)))
+;; (defun bh/display-inline-images ()
+;;   (condition-case nil
+;;       (org-display-inline-images)
+;;     (error nil)))
 
-(defun bh/load-languages ()
-  (org-babel-do-load-languages
-   (quote org-babel-load-languages)
-   (quote ((emacs-lisp . t)
-           (dot . t)
-           (ditaa . t)
-           (python . t)
-           (sh . t)
-           (org . t)
-           (latex . t)))))
-;; end of graphviz dot magic
+;; (defun bh/load-languages ()
+;;   (org-babel-do-load-languages
+;;    (quote org-babel-load-languages)
+;;    (quote ((emacs-lisp . t)
+;;            (dot . t)
+;;            (ditaa . t)
+;;            (python . t)
+;;            (sh . t)
+;;            (org . t)
+;;            (latex . t)))))
+;; ;; end of graphviz dot magic
 
 ;; add support to org-mode for the IEEEtran latex class:
 (eval-after-load 'org-latex
@@ -697,83 +783,34 @@ whether you are defining one at the moment or not"
 
 ;; display which function your cursor is in down in the mode line
 (which-function-mode 1)
+(setq-default header-line-format
+              '((which-func-mode ("" which-func-format " "))))
+(setq mode-line-misc-info
+            ;; We remove Which Function Mode from the mode line, because it's mostly
+            ;; invisible here anyway.
+            (assq-delete-all 'which-func-mode mode-line-misc-info))
+;; better which-func color (font-lock-function-name-face from my
+;; tango-2 theme...hmm, is there a better way to get that color?):
+(set-face-foreground 'which-func "#729fcf")
 
 ;; include directory name in buffers visiting files that have the same
 ;; name:
 (require 'uniquify nil t)
 (setq uniquify-buffer-name-style 'post-forward)
 
-
-;; erc (irc client): Most of this came from here:
-;; http://emacs-fu.blogspot.com/2009/06/erc-emacs-irc-client.html
-(erc-autojoin-mode t)
-(setq erc-autojoin-channels-alist
-  '((".*\\.freenode.net" "#utah" "##lds" "##verilog" "##hamradio")))
-
-;; don't notify me of these things:
-(setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
-                                 "324" "329" "332" "333" "353" "477"))
-;; don't show any of this
-(setq erc-hide-list '("JOIN" "PART" "QUIT" "NICK"))
-
-;; show where I stopped reading irc last (from:
-;; http://www.emacswiki.org/emacs/ErcBar)
-(eval-after-load 'erc-track
-  '(progn
-     (defun erc-bar-move-back (n)
-       "Moves back n message lines. Ignores wrapping, and server messages."
-       (interactive "nHow many lines ? ")
-       (re-search-backward "^.*<.*>" nil t n))
-
-     (defun erc-bar-update-overlay ()
-       "Update the overlay for current buffer, based on the content of
-erc-modified-channels-alist. Should be executed on window change."
-       (interactive)
-       (let* ((info (assq (current-buffer) erc-modified-channels-alist))
-	      (count (cadr info)))
-	 (if (and info (> count erc-bar-threshold))
-	     (save-excursion
-	       (end-of-buffer)
-	       (when (erc-bar-move-back count)
-		 (let ((inhibit-field-text-motion t))
-		   (move-overlay erc-bar-overlay
-				 (line-beginning-position)
-				 (line-end-position)
-				 (current-buffer)))))
-	   (delete-overlay erc-bar-overlay))))
-
-     (defvar erc-bar-threshold 1
-       "Display bar when there are more than erc-bar-threshold unread messages.")
-     (defvar erc-bar-overlay nil
-       "Overlay used to set bar")
-     (setq erc-bar-overlay (make-overlay 0 0))
-     (overlay-put erc-bar-overlay 'face '(:underline "black"))
-     ;;put the hook before erc-modified-channels-update
-     (defadvice erc-track-mode (after erc-bar-setup-hook
-				      (&rest args) activate)
-       ;;remove and add, so we know it's in the first place
-       (remove-hook 'window-configuration-change-hook 'erc-bar-update-overlay)
-       (add-hook 'window-configuration-change-hook 'erc-bar-update-overlay))
-     (add-hook 'erc-send-completed-hook (lambda (str)
-					  (erc-bar-update-overlay)))))
-
 ;; use tramp, a few tweaks for it:
 (require 'tramp)
 (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
-;; REVISIT: better to just do this in my ssh_config?  I just wanted to
-;; add the -A:
-(add-to-list 'tramp-connection-properties
-             (list (regexp-quote "/ssh:nova")
-                   "login-args"
-                   '(("-A") ("-l" "%u") ("-p" "%p") ("%c")
-                     ("-e" "none") ("%h"))))
-(add-to-list 'tramp-connection-properties
-             (list (regexp-quote "/ssh:nebula")
-                   "login-args"
-                   '(("-A") ("-l" "%u") ("-p" "%p") ("%c")
-                     ("-e" "none") ("%h"))))
+;; make bigger (like, 10) for better debugging, but keep low for
+;; speed:
+(setq tramp-verbose 2)
+;; disable vc for tramp files, for speed
+(setq vc-ignore-dir-regexp
+      (format "\\(%s\\)\\|\\(%s\\)"
+              vc-ignore-dir-regexp
+              tramp-file-name-regexp))
 
-(setq custom-file "~/.emacs.d/customize-junk.el")
+(setq custom-file "~/.config/emacs/customize-junk.el")
 (load custom-file)
 
 (load-user-file "skeletons.el")
