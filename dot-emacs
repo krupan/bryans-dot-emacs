@@ -476,10 +476,24 @@ tags table and its (recursively) included tags tables."
 (setq org-src-window-setup 'current-window)
 
 (setq org-capture-templates
-      '(("t" "Todo" entry (file+headline "~/Documents/notes.org" "Tasks")
+      '(("w" "work templates")
+        ("wt" "Todo" entry (file+headline "~/Documents/notes.org" "Tasks")
          "* TODO %?\n%i%a" :prepend t)
-        ("n" "Notes" entry (file+olp "~/Documents/notes.org" "Notes")
-         "* Note taken on %U\n%i%?link to origin: %a" :prepend t)))
+        ("wn" "Notes" entry (file+olp "~/Documents/notes.org" "Notes")
+         "* Note taken on %U\n%i%?link to origin: %a" :prepend t)
+        ("h" "home templates")
+        ("ht" "Todo" entry (file+headline "~/Documents/notes/everything.org" "Tasks")
+         "* TODO %?\n%i%a" :prepend t)
+        ("hn" "Notes" entry (file+olp "~/Documents/notes/everything.org" "Notes")
+         "* Note taken on %U\n%i%?link to origin: %a" :prepend t)
+        ))
+;; The above template for home will put a note under Notes in
+;; everything.org.  The following makes it easy to refile notes under
+;; a level 2 heading, like I usually do:
+(setq org-refile-targets '((nil . (:maxlevel . 2))))
+;; this puts refiled notes at the top, in reverse chronological order,
+;; like I prefer:
+(setq org-reverse-note-order t)
 
 ;; wrap long lines in text modes:
 (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
