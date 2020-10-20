@@ -74,9 +74,9 @@
 (use-package graphviz-dot-mode
   :ensure t)
 
-;; (use-package ido-completing-read+
-;;   :ensure t
-;;   :config (ido-ubiquitous-mode 1))
+(use-package ido-completing-read+
+  :ensure t
+  :config (ido-ubiquitous-mode 1))
 
 (use-package magit
   :ensure t
