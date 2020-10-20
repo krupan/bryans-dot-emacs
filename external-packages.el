@@ -109,7 +109,9 @@
   :ensure t)
 
 (use-package yaml-mode
-  :ensure t)
+  :ensure t
+  :init
+  (add-hook 'yaml-mode-hook (lambda () (flyspell-mode 0))))
 
 ;; more essentials for big hairy yaml file editing,
 ;; highlight-indent-guides and indent-tools
