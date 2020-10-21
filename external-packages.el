@@ -205,3 +205,9 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
     :hostmode 'poly-verilog-hostmode
     :innermodes '(pm-inner/jinja2)
     (verilog 1)))
+
+(use-package expand-region
+  :ensure t
+  ;; the cool thing about this is you can hit C-c h and then keep
+  ;; hitting just h to continue expanding the region
+  :config (global-set-key (kbd "C-c h") 'er/expand-region))
