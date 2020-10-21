@@ -440,6 +440,8 @@ tags table and its (recursively) included tags tables."
   ;; check showed it was fine for other modes.
   (setq electric-indent-mode nil)
   (verilog-set-compile-command)
+  ;; fix word boundaries for verilog-mode:
+  (modify-syntax-entry ?_ "@" verilog-mode-syntax-table)
   (defun verilog-list-methods()
     (interactive)
     (occur "\\( function \\| task \\)" nil)))
