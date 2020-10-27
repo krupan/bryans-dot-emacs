@@ -506,14 +506,16 @@ tags table and its (recursively) included tags tables."
 (setq flyspell-issue-message-flag nil)
 
 ;; With this you can put graphviz dot source code in a
-;; #+begin_src...#+end_src block, hit c-c c-c and it will turn it into
-;; an image and display it inline.  It also gets exported to your pdf
-;; with the rest of your document.  Pretty dang awesome.  Found this
-;; here: http://doc.norang.ca/org-mode.html#Publishing
+;; #+begin_src...#+end_src block, hit c-c c-c, and it will turn it
+;; into an image and display it inline.  You can also hit c-c c-v b to
+;; process all the code blocks in a document.  The images also get
+;; generated and exported to your pdf/html/whatever with the rest of
+;; your document.  Pretty dang awesome.  Found this here originally:
+;; http://doc.norang.ca/org-mode.html#Publishing
 ;;
+(add-hook 'org-babel-after-execute-hook 'bh/display-inline-images 'append)
 ;; The above also mentions ditaa that turns ascii art into pretty
 ;; pictures too.
-(add-hook 'org-babel-after-execute-hook 'bh/display-inline-images 'append)
 ;; (setq org-ditaa-jar-path "~/src/ditaa/ditaa0_9.jar")
 
 (defun bh/display-inline-images ()
