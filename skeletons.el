@@ -1,7 +1,7 @@
 ;; to bind skeletons to an abbrev do M-x list-abbrevs, edit the
 ;; abbrev-table you want it to be a part of, then hit C-c C-c, try it
 ;; out, then hit C-x C-s to save it to the abbrevs file
-
+(setq skeleton-end-newline nil)
 (define-skeleton skel-verilog-insert-uvm-info
   "Insert a uvm_info template"
   nil
