@@ -505,42 +505,27 @@ tags table and its (recursively) included tags tables."
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 (setq flyspell-issue-message-flag nil)
 
-
-;; TODO: this graphviz stuff breaks org-mode in emacs 26.1,
-;; org-version 9.1.9.  Not using it at the moment, so I'm just
-;; commenting it out for now:
+;; With this you can put graphviz dot source code in a
+;; #+begin_src...#+end_src block, hit c-c c-c and it will turn it into
+;; an image and display it inline.  It also gets exported to your pdf
+;; with the rest of your document.  Pretty dang awesome.  Found this
+;; here: http://doc.norang.ca/org-mode.html#Publishing
 ;;
-;; ;; With this you can put graphviz dot source code in a
-;; ;; #+begin_src...#+end_src block, hit c-c c-c and it will turn it into
-;; ;; an image and display it inline.  It also gets exported to your pdf
-;; ;; with the rest of your document.  Pretty dang awesome.  Found this
-;; ;; here: http://doc.norang.ca/org-mode.html#Publishing
-;; ;;
-;; ;; The above also mentions ditaa that turns ascii art into pretty
-;; ;; pictures too.
-;; (add-hook 'org-babel-after-execute-hook 'bh/display-inline-images 'append)
-;; (add-hook 'org-mode-hook 'bh/load-languages 'append)
+;; The above also mentions ditaa that turns ascii art into pretty
+;; pictures too.
+(add-hook 'org-babel-after-execute-hook 'bh/display-inline-images 'append)
 ;; (setq org-ditaa-jar-path "~/src/ditaa/ditaa0_9.jar")
 
-;; ; Make babel results blocks lowercase
-;; (setq org-babel-results-keyword "results")
+(defun bh/display-inline-images ()
+  (condition-case nil
+      (org-display-inline-images)
+    (error nil)))
 
-;; (defun bh/display-inline-images ()
-;;   (condition-case nil
-;;       (org-display-inline-images)
-;;     (error nil)))
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((dot . t)))
+;; end of graphviz dot magic
 
-;; (defun bh/load-languages ()
-;;   (org-babel-do-load-languages
-;;    (quote org-babel-load-languages)
-;;    (quote ((emacs-lisp . t)
-;;            (dot . t)
-;;            (ditaa . t)
-;;            (python . t)
-;;            (sh . t)
-;;            (org . t)
-;;            (latex . t)))))
-;; ;; end of graphviz dot magic
 
 ;; add support to org-mode for the IEEEtran latex class:
 (eval-after-load 'org-latex
