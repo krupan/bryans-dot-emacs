@@ -167,6 +167,8 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (use-package indent-tools
   :ensure t
   :config 
+  ;; this conflicts with org-goto-calendar, but none of this is very
+  ;; helpful in org-mode anyway
   (global-set-key (kbd "C-c >") 'indent-tools-hydra/body)
   (add-hook 'python-mode-hook
             (lambda ()
