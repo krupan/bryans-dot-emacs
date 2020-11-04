@@ -119,7 +119,8 @@
   :ensure t
   :config
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-  (add-hook 'yaml-mode-hook 'highlight-indent-guides-mode))
+  (add-hook 'yaml-mode-hook 'highlight-indent-guides-mode)
+  (add-hook 'org-mode-hook 'highlight-indent-guides-mode))
 ;; I've avoided hydra for a while now, but indent-tools really wanted
 ;; it, and after using magit for a while, it looks pretty normal to me
 ;; now.  Oh, and it can replace smartrep!  OK, I'm sold.
