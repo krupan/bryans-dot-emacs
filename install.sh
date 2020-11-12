@@ -2,6 +2,10 @@
 set -e
 set -x
 REPO_DIR=$(pwd)
+mv -f ~/.emacs.d{,bak}
+mkdir -p ~/.config/emacs/
+# just in case:
+ln -s ~/.config/emacs ~/.emacs.d
 cd ~/.config/emacs/
 if [ ! -d eshell ]; then
     mkdir eshell
