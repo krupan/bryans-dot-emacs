@@ -8,12 +8,6 @@
 ;; NOTE: will not automatically delete packages that I remove from
 ;; this file like el-get does.  That'll have to be manual, sadly.
 ;;
-;; I'm very tempted to just use arch packages instead of package.el
-;; and MELPA.  Some of what I want is already on the AUR, but some is
-;; not.  It's not hard to make packages and maybe I could even get
-;; them on the AUR, but it would still be more work than MELPA, at
-;; least I believe so at this point.
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; use melpa, comes from here:
 ;; http://melpa.milkbox.net/#/getting-started
@@ -24,14 +18,10 @@
 (when (< emacs-major-version 27)
   (package-initialize))
 
-;; Now, you have to install use-package with M-x package-install
-;; before the following will work.  That's the one time you'll have to
-;; manually run package-install (ideally, but I have had to manually
-;; install a couple packages).  The following will take care of
-;; installing all other packcages: This is only needed once, near the
-;; top of the file
 (eval-when-compile
-  ;; Following line is not needed if use-package.el is in ~/.emacs.d
+  (if (not (package-installed-p 'use-package))
+      (progn (package-refresh-contents)
+             (package-install 'use-package)))
   (require 'use-package))
 
 (use-package ag
