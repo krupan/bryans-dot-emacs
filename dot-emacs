@@ -821,6 +821,7 @@ whether you are defining one at the moment or not"
 (setq uniquify-buffer-name-style 'post-forward)
 
 ;; use tramp, a few tweaks for it:
+(setenv "SSH_AUTH_SOCK" (concat (getenv "XDG_RUNTIME_DIR") "/ssh-agent.socket"))
 (require 'tramp)
 (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 ;; make bigger (like, 10) for better debugging, but keep low for
