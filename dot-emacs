@@ -50,11 +50,18 @@
           (lambda ()
             (define-key ido-completion-map [tab] 'ido-complete)))
 
-;; try this instead of desktop or session:
+;; recentf is great, but it cleans up tramp files too aggressively:
+(setq recentf-auto-cleanup 'never)
 (recentf-mode 1)
 ;; save periodically
 (run-with-idle-timer 60 t 'recentf-save-list)
-(global-set-key "\C-cr" 'recentf-open-files)
+(defun ido-recentf-open ()
+  "Use `ido-completing-read' to \\[find-file] a recent file"
+  (interactive)
+  (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+      (message "Opening file...")
+    (message "Aborting")))
+(global-set-key "\C-cr" 'ido-recentf-open)
 
 ;; With this, typing an abbreviations expands to something much more
 ;; (like a skeleton):
