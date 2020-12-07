@@ -160,14 +160,10 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
   :config 
   ;; this conflicts with org-goto-calendar, but none of this is very
   ;; helpful in org-mode anyway
-  (global-set-key (kbd "C-c >") 'indent-tools-hydra/body)
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (define-key python-mode-map (kbd "C-c >")
-                'indent-tools-hydra/body)))
+  (global-set-key (kbd "C-c i") 'indent-tools-hydra/body)
   (add-hook 'yaml-mode-hook
             (lambda ()
-              (define-key yaml-mode-map (kbd "C-c >")
+              (define-key yaml-mode-map (kbd "C-c i")
                 'indent-tools-hydra/body))))
 
 ;; needed for polymode below
