@@ -450,6 +450,10 @@ tags table and its (recursively) included tags tables."
   (verilog-set-compile-command)
   ;; fix word boundaries for verilog-mode:
   (modify-syntax-entry ?_ "@" verilog-mode-syntax-table)
+  ;; clear the incredibly extensive (and annoying to me)
+  ;; verilog-mode-abbrev-table.  Somehow this preserves my own custom
+  ;; verilog mode abbrevs, which is perfect.
+  (clear-abbrev-table verilog-mode-abbrev-table)
   (defun verilog-list-methods()
     (interactive)
     (occur "\\( function \\| task \\)" nil)))
