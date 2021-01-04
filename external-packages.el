@@ -83,9 +83,10 @@
 (use-package markdown-mode
   :ensure t)
 
-(use-package smart-tab
-  :ensure t
-  :config (global-smart-tab-mode 1))
+;; not working for me :-(
+;; (use-package smart-tab
+;;   :ensure t
+;;   :config (global-smart-tab-mode 1))
 
 (use-package smex
   :ensure t
@@ -200,3 +201,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
   ;; the cool thing about this is you can hit C-c h and then keep
   ;; hitting just h to continue expanding the region
   :config (global-set-key (kbd "C-c h") 'er/expand-region))
+
+(use-package py-isort
+  :ensure t
+  :config (add-hook 'before-save-hook 'py-isort-before-save))
