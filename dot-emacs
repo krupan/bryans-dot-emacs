@@ -579,7 +579,10 @@ tags table and its (recursively) included tags tables."
 (setq mac-command-key-is-meta t)
 (setq mac-command-modifier 'meta)
 (setq mac-option-modifier nil)
-
+;; make opt key do Super so I can imitate i3 a little
+(setq mac-option-modifier 'super)
+(global-set-key (kbd "s-l") 'other-window)
+(global-set-key (kbd "s-j") 'other-window)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Some custom key bindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
