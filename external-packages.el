@@ -83,9 +83,10 @@
 (use-package markdown-mode
   :ensure t)
 
-(use-package smart-tab
-  :ensure t
-  :config (global-smart-tab-mode 1))
+;; magit and smart-tab are currently incompatible :-(
+;; (use-package smart-tab
+;;   :ensure t
+;;   :config (global-smart-tab-mode 1))
 
 (use-package smex
   :ensure t
