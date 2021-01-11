@@ -83,10 +83,9 @@
 (use-package markdown-mode
   :ensure t)
 
-;; not working for me :-(
-;; (use-package smart-tab
-;;   :ensure t
-;;   :config (global-smart-tab-mode 1))
+(use-package smart-tab
+  :ensure t
+  :config (global-smart-tab-mode 1))
 
 (use-package smex
   :ensure t
