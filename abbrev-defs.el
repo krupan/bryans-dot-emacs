@@ -8,11 +8,13 @@
 
 (define-abbrev-table 'global-abbrev-table
   '(
-    ("adn" "and" nil :count 1)
-    ("dtt" "" skel-django-template-tag :count 19)
-    ("dtv" "" skel-django-template-var :count 6)
-    ("shr" "¯\\_(ツ)_/¯" nil :count 2)
-    ("teh" "the" nil :count 14)
+    ("adn" "and" nil :count 3)
+    ("dtt" "" skel-django-template-tag :count 21)
+    ("dtv" "" skel-django-template-var :count 7)
+    ("shr" "¯\\_(ツ)_/¯" nil :count 3)
+    ("teh" "the" nil :count 16)
+    ("uvmi" "" skel-verilog-insert-uvm-info :count 4)
+    ("uvmip" "" skel-verilog-insert-uvm-info-with-psprintf :count 2)
    ))
 
 (define-abbrev-table 'org-mode-abbrev-table
@@ -25,13 +27,5 @@
 (define-abbrev-table 'python-mode-abbrev-table
   '(
     ("bp" "import pdb; pdb.set_trace()" nil :count 4)
-   ))
-
-(define-abbrev-table 'verilog-mode-abbrev-table
-  '(
-    ("debug" "" skel-verilog-insert-uvm-info :count 5)
-    ("debugp" "" skel-verilog-insert-uvm-info-with-psprintf :count 3)
-    ("uvm_info" "" skel-verilog-insert-uvm-info :count 3)
-    ("uvm_infop" "" skel-verilog-insert-uvm-info-with-psprintf :count 2)
    ))
 

@@ -451,8 +451,9 @@ tags table and its (recursively) included tags tables."
   ;; fix word boundaries for verilog-mode:
   (modify-syntax-entry ?_ "@" verilog-mode-syntax-table)
   ;; clear the incredibly extensive (and annoying to me)
-  ;; verilog-mode-abbrev-table.  Somehow this preserves my own custom
-  ;; verilog mode abbrevs, which is perfect.
+  ;; verilog-mode-abbrev-table.  Downside: any verilog specific
+  ;; abbrevs that I do want need to go somewhere else, like
+  ;; global-abbrev-table
   (clear-abbrev-table verilog-mode-abbrev-table)
   (defun verilog-list-methods()
     (interactive)
