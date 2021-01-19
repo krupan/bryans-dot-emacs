@@ -605,7 +605,7 @@ tags table and its (recursively) included tags tables."
                            (enlarge-window-horizontally 10)))
 
 (global-set-key "\C-cg" 'goto-line)
-(global-set-key "\C-cv" 'view-file)
+(global-set-key "\C-x\C-v" 'view-file)
 (global-set-key "\C-ceb" 'ediff-buffers)
 (global-set-key "\C-cef" 'ediff)
 (global-set-key "\C-csb" 'ispell-buffer)
