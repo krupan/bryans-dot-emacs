@@ -17,7 +17,7 @@
  '(magit-log-arguments '("--graph" "--color" "--decorate" "-n256"))
  '(org-agenda-files nil)
  '(package-selected-packages
-   '(use-package py-isort expand-region hydra polymode jinja2-mode indent-tools highlight-indent-guides dumb-jump zig-mode htmlize django-mode dockerfile-mode go-mode hyperbole ztree forge ghub rust-auto-use adoc-mode slack cargo rust-mode hideshow-org clang-format memory-usage ido-completing-read+ cmake-mode lua-mode yaml-mode wgrep-ag smex smartrep smart-tab markdown-mode magit graphviz-dot-mode exec-path-from-shell crm-custom))
+   '(direnv use-package py-isort expand-region hydra polymode jinja2-mode indent-tools highlight-indent-guides dumb-jump zig-mode htmlize django-mode dockerfile-mode go-mode hyperbole ztree forge ghub rust-auto-use adoc-mode slack cargo rust-mode hideshow-org clang-format memory-usage ido-completing-read+ cmake-mode lua-mode yaml-mode wgrep-ag smex smartrep smart-tab markdown-mode magit graphviz-dot-mode exec-path-from-shell crm-custom))
  '(recentf-auto-cleanup 'never)
  '(send-mail-function 'smtpmail-send-it)
  '(smtpmail-smtp-server "smtp.gmail.com")

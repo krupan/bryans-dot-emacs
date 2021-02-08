@@ -205,3 +205,7 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 (use-package py-isort
   :ensure t
   :config (add-hook 'before-save-hook 'py-isort-before-save))
+
+(use-package direnv
+ :config
+ (direnv-mode))
