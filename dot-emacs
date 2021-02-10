@@ -504,7 +504,7 @@ tags table and its (recursively) included tags tables."
         ("c" "clerk templates")
         ("ct" "Todo" entry (file+headline "~/Sync/clerk.org" "Current tasks")
          "* TODO %?\n%i%a" :prepend t)
-        ("cn" "Notes" entry (file+olp "~/Sync/clerk.org" "Notes")
+        ("cn" "Notes" entry (file+headline "~/Sync/clerk.org" "Notes")
          "* Note taken on %U\n%i%?link to origin: %a" :prepend t)
         ))
 ;; The above template for home will put a note under Notes in
