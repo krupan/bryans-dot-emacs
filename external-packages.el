@@ -208,4 +208,5 @@ _h_   _l_     _y_ank        _t_ype       _e_xchange-point          /,`.-'`'   ..
 
 (use-package direnv
  :config
- (direnv-mode))
+ (direnv-mode)
+ (setq direnv-always-show-summary nil))
